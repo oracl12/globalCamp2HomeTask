@@ -43,6 +43,16 @@ public:
         return host;
     }
 
+    const inline int getPeriodL()
+    {
+        return periodL;
+    }
+
+    const inline std::wstring getParamsL()
+    {
+        return paramsL;
+    }
+
     ~CommandLineHandler();
 
 private:
@@ -52,4 +62,6 @@ private:
     LPWSTR *szArgList;
     int argCount;
     bool host;
+    int periodL = 1;
+    std::wstring paramsL;
 };

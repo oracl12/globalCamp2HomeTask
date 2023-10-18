@@ -15,7 +15,8 @@
 #endif
 
 #define SOCKET_ERROR (-1)
-#define IP_SERVER "127.0.0.1"
+// #define IP_SERVER "127.0.0.1"
+#define IP_SERVER "192.168.0.113"
 
 class SocketUtil
 {

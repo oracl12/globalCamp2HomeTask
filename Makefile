@@ -4,7 +4,7 @@ ifeq ($(OS),Windows_NT)
 CFLAGS := -mwindows
 LIBS = -lws2_32
 else
-CFLAGS := -std=c++11 -pthread
+CFLAGS := -std=c++11 -pthread -lPdh
 LIBS = -lws2_32
 endif
 

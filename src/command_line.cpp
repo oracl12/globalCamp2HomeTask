@@ -47,6 +47,24 @@ CommandLineHandler::CommandLineHandler()
         {
             gameMode = 'b';
         }
+
+        // Loadability
+
+        if (wmemcmp(szArgList[i], L"--lperiod=", wcslen(L"--lperiod=")) == 0) // remove here wcslen
+        {
+            std::wstring periodV = szArgList[i] + wcslen(L"--lperiod=");
+
+            if (!periodV.empty())
+            {
+                periodL = std::stoi(periodV);
+                std::wcout << L"Period time in minutes: " << periodL << std::endl;
+            }
+        }
+
+        if (wmemcmp(szArgList[i], L"--lvalues=", wcslen(L"--lvalues=")) == 0) // remove here wcslen
+        {
+            paramsL = szArgList[i] + wcslen(L"--lvalues=");
+        }
     }
 };
 

@@ -6,5 +6,4 @@
 # then the other stuff
 .vscode
 *.exe
-
-
+log.txt

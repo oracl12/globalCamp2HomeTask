@@ -4,6 +4,8 @@
 #include <winuser.h>
 #include <stdint.h>
 
+#include "loadability.h"
+
 struct RGBColor
 {
 	uint8_t red, green, blue;
