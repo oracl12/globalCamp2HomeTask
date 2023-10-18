@@ -9,7 +9,7 @@
 #undef UNICODE
 #endif
 
-#include <memory>
+// #include <memory>
 
 #include "headers/game.h"
 #include "headers/renderer.h"
@@ -19,7 +19,6 @@
 #include "headers/player.h"
 #include "headers/debug.h"
 #include "headers/command_line.h"
-#include "headers/loadability.h"
 #include "headers/network/client.h"
 #include "headers/network/server.h"
 #include "headers/network/socket_utils.h"
@@ -31,7 +30,7 @@ int start_r_x = 740 + 6;
 char gameMode;
 bool ready = false;
 bool host = false;
-// 
+
 extern HDC device_context;
 extern bool playerStep;
 
@@ -88,8 +87,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		Sleep(1000);
 		return 0;
 	}
-
-	// Loadability loadAbility(commandLineHandler.getParamsL(), commandLineHandler.getPeriodL());
 
 	std::vector<Ship> &ships = ShipHandler::getShips();
 	ShipHandler::fillUpShips();

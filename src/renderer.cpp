@@ -151,7 +151,6 @@ void Renderer::copyBufferToWindow(HDC deviceContext, bool yourStep)
 	SetBkMode( deviceContext, TRANSPARENT );
 	TextOut(deviceContext, 620, 660, TEXT("READY"),strlen("READY"));
 	yourStep ? TextOut(deviceContext, 7, 7, TEXT("Your Step"),strlen("Your Step")) : TextOut(deviceContext, 7, 7, TEXT("Enemys Step"),strlen("Enemys Step"));
-	// TextOutA(deviceContext, 620, 8, Loadability::getResources().c_str(), Loadability::getResources().size());
 	StretchDIBits(
 		deviceContext,
 		0, 0, width, height,
