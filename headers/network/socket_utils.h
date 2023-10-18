@@ -2,9 +2,14 @@
 
 #ifdef _WIN32
 #include <winsock2.h>
+#include <windows.h>
 #else
+#include <unistd.h>
 #include <arpa/inet.h>
+#include <signal.h>
 #endif
+
+#include <iostream>
 
 #ifndef INVALID_SOCKET
 #define INVALID_SOCKET (-1)
@@ -35,6 +40,4 @@ public:
     void listenToSocket(int socket);
 
     void connectToSocket(int socket, int port);
-
-    char *getIp(sockaddr_in *sin_addr);
 };

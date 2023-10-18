@@ -34,6 +34,7 @@ public:
     static void fillUpShips();
     static bool isDestroyed(Ship* ship);
     static Ship* getShipFromMatrix(int x, int y);
+    static std::vector<ShipType> getShipTypes();
 private:
     static bool IsMouseInRect(int mouseX, int mouseY, const Rect& rect);
     static bool canPlaceShip(int startX, int startY, char orientation, int shipLength);

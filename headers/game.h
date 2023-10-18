@@ -69,7 +69,9 @@ public:
 
 	static bool isEndOfGame();
 	static bool isShipPlacementFinished();
-	
+	// static void fillPrivateMatrix();
+
+	static const int matrixS = 10;
 	std::wstring windowTitle = TITLE;
 private:
 	void startWindow();

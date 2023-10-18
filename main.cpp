@@ -24,7 +24,6 @@
 #include "headers/network/server.h"
 #include "headers/network/socket_utils.h"
 
-const int MATRIX_S = 10;
 int size = 50;
 int start_l_x = 75;
 int start_r_x = 740 + 6;
@@ -36,19 +35,6 @@ bool host = false;
 extern HDC device_context;
 #endif
 extern bool playerStep;
-
-void fillPrivateMatrix()
-{
-	for (int i = 0; i < MATRIX_S; ++i)
-	{
-		for (int j = 0; j < MATRIX_S; ++j)
-		{
-			Player::getPrivateMatrix()[i][j] = -1;
-			if (gameMode == 'b')
-				Bot::getPublicMatrix()[i][j] = -1;
-		}
-	}
-}
 
 #ifdef _WIN32
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
@@ -120,15 +106,15 @@ int main(int argc, char* argv[])
 
 			timePassed -= 1.0f;
 			frames = 0;
-			// std::wcout << charBuffer << std::endl;
+			std::wcout << charBuffer << std::endl;
 		}
 
 		// left table
-		for (int line = 0; line < MATRIX_S; line++) {
-			for (int row = 0; row < MATRIX_S; row++) {
+		for (int line = 0; line < Game::matrixS; line++) {
+			for (int row = 0; row < Game::matrixS; row++) {
 				RGBColor color;
 				switch ((ready ? Player::getPublicMatrix() : Player::getPrivateMatrix())[line][row]) {
-					case -1: // sector is clear
+					case -1: // sector is cleared
 						color = { 12, 21, 12 };
 						break;
 					case 1: // sector where ship is hitten
@@ -137,7 +123,7 @@ int main(int argc, char* argv[])
 					case 2: // ship of yours
 						color = { 255, 192, 203 };
 						break;
-					default: // just tile
+					default: // hidden tile
 						color = { 128, 128, 128 };
 				}
 
@@ -154,11 +140,11 @@ int main(int argc, char* argv[])
 		Renderer::FillRectangle( { 1280 / 2 - 2, 0, 4, 600 }, { 255, 5, 5 });
 
 		// right table
-		for (int line = 0; line < MATRIX_S; line++) {
-			for (int row = 0; row < MATRIX_S; row++) {
+		for (int line = 0; line < Game::matrixS; line++) {
+			for (int row = 0; row < Game::matrixS; row++) {
 				RGBColor color;
 				switch (Enemy::getPublicMatrix()[line][row]) {
-					case -1: // sector is clear
+					case -1: // sector is cleared
 						color = { 12, 21, 12 };
 						break;
 					case 1: // sector where ship is hitten
@@ -167,7 +153,7 @@ int main(int argc, char* argv[])
 					case 2: // ship of yours
 						color = { 255, 192, 203 };
 						break;
-					default: // just tile
+					default: // hidden tile
 						color = { 128, 128, 128 };
 				} 
 

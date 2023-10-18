@@ -147,7 +147,6 @@ void Renderer::allocBuffer()
 void Renderer::copyBufferToWindow(HDC deviceContext, bool yourStep)
 {
 	BitmapBuffer &buffer = getInstance().buffer;
-	// TODO fix this blinking
 	SetBkMode( deviceContext, TRANSPARENT );
 	TextOut(deviceContext, 620, 660, TEXT("READY"),strlen("READY"));
 	yourStep ? TextOut(deviceContext, 7, 7, TEXT("Your Step"),strlen("Your Step")) : TextOut(deviceContext, 7, 7, TEXT("Enemys Step"),strlen("Enemys Step"));

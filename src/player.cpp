@@ -18,7 +18,7 @@ bool Player::makeShot(int x, int y)
             // if successful mark it as 1 in the public
             Enemy::getPublicMatrix()[y][x] = 1;
             Enemy::getPrivateMatrix()[y][x] = 1;
-            std::cout << "Shot successful!" << std::endl;
+            std::cout << "Player: Shot successful!" << std::endl;
             return true;
         }
         else
@@ -26,19 +26,20 @@ bool Player::makeShot(int x, int y)
             if (Enemy::getPrivateMatrix()[y][x] != 1) {
                 Enemy::getPublicMatrix()[y][x] = -1;
             }
-            std::cout << "Shot missed!" << std::endl;
+            std::cout << "Player: Shot missed!" << std::endl;
             return false;
         }
     }
     else
     {
-        std::cout << "Invalid coordinates. Shot cannot be made." << std::endl;
+        std::cout << "Player: Invalid coordinates. Shot cannot be made." << std::endl;
         return false;
     }
 }
 
 void Player::changeShipPosition(int mouseX, int mouseY, Ship* ship){
     int counter = 0;
+    std::cout << "Player: changing position" << std::endl;
     if (ship->relative_position == 'h') {
         for (Rect& rect : ship->rects) {
             rect.x = mouseX - 20 + counter * size;

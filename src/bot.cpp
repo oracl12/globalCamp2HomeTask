@@ -1,9 +1,3 @@
-#include "../headers/bot.h"
-#include "../headers/ship.h"
-#include "../headers/player.h"
-#include "../headers/game.h"
-#include "../headers/other.h"
-
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -14,10 +8,13 @@
 #include <string>
 #include <random>
 
-extern int playerStep;
+#include "../headers/bot.h"
+#include "../headers/ship.h"
+#include "../headers/player.h"
+#include "../headers/game.h"
+#include "../headers/other.h"
 
-extern int start_l_x;
-extern int start_r_x;
+extern int playerStep;
 
 bool currentlySearching = true;
 bool currentlySearchingVectorOfShip = false;
@@ -57,14 +54,9 @@ bool Bot::makeShot(int x, int y)
 
 bool Bot::shootOneOfFourClosesTile()
 {
-    std::cout << "Top value" << Player::getPublicMatrix()[y - 1][x] << std::endl;
-    std::cout << "Bottom value" << Player::getPublicMatrix()[y + 1][x] << std::endl;
-    std::cout << "Right value" << Player::getPublicMatrix()[y][x + 1] << std::endl;
-    std::cout << "Left value" << Player::getPublicMatrix()[y][x - 1] << std::endl;
-
     if (y > 0 && Player::getPublicMatrix()[y - 1][x] == 0)
     {
-        std::cout << "SHOOTING AT top" << std::endl;
+        std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT top" << std::endl;
         if (makeShot(x, y - 1))
         {
             vector = 'v';
@@ -74,7 +66,7 @@ bool Bot::shootOneOfFourClosesTile()
     }
     else if (x < 10 && Player::getPublicMatrix()[y][x + 1] == 0)
     {
-        std::cout << "SHOOTING AT right" << std::endl;
+        std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT right" << std::endl;
         if (makeShot(x + 1, y))
         {
             vector = 'h';
@@ -84,7 +76,7 @@ bool Bot::shootOneOfFourClosesTile()
     }
     else if (y < 10 && Player::getPublicMatrix()[y + 1][x] == 0)
     {
-        std::cout << "SHOOTING AT bottom" << std::endl;
+        std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT bottom" << std::endl;
         if (Bot::makeShot(x, y + 1))
         {
             vector = 'v';
@@ -94,7 +86,7 @@ bool Bot::shootOneOfFourClosesTile()
     }
     else if (x > 0 && Player::getPublicMatrix()[y][x - 1] == 0)
     {
-        std::cout << "SHOOTING AT left" << std::endl;
+        std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT left" << std::endl;
         if (Bot::makeShot(x - 1, y))
         {
             vector = 'h';
@@ -104,6 +96,7 @@ bool Bot::shootOneOfFourClosesTile()
     }
 
     // that means that ship is single point
+    std::cout << "BOT: SEARCHING VECTOR: END CAUSE ONE TILE SHIP" << std::endl;
     currentlySearching = true;
     currentlySearchingVectorOfShip = false;
     entry_point();
@@ -158,7 +151,6 @@ void movingByYAxis()
                     playerStep = true;
                     vector_direction = false;
                     currentlySearching = true;
-                    currentlySearchingVectorOfShip = false;
                     currentlySearchingByVectorTiles = false;
                     return;
                 }
@@ -173,7 +165,6 @@ void movingByYAxis()
         {
             playerStep = true;
             currentlySearching = true;
-            currentlySearchingVectorOfShip = false;
             currentlySearchingByVectorTiles = false;
             vector_direction = false;
             return;
@@ -232,7 +223,6 @@ void movingByXAxis()
                     playerStep = true;
                     vector_direction = false;
                     currentlySearching = true;
-                    currentlySearchingVectorOfShip = false;
                     currentlySearchingByVectorTiles = false;
                     return;
                 }
@@ -247,7 +237,6 @@ void movingByXAxis()
             std::cout << "BOT: MOVING BY AXIS: MOVING right: EDGE" << std::endl;
             playerStep = true;
             currentlySearching = true;
-            currentlySearchingVectorOfShip = false;
             currentlySearchingByVectorTiles = false;
             vector_direction = false;
             return;
@@ -264,6 +253,7 @@ void Bot::entry_point()
 
     if (currentlySearching)
     {
+        std::cout << "BOT: Entry" << std::endl;
         if (Game::isEndOfGame()){
             #ifdef _WIN32
 			MessageBoxA(NULL, Game::getWinner() == 'y' ? "You are winner" : "Enemy wins", "Game ends", MB_OK | MB_ICONINFORMATION);
@@ -392,16 +382,11 @@ bool Bot::hasMinimumDistance(int x, int y, int size, int orientation)
 void Bot::generateShipsOnMatrix()
 {
     // place this ships to SHIP CLASS
-    std::vector<ShipType> shipTypes;
-    shipTypes.push_back({5, 1}); // One 5-rectangle ship
-    shipTypes.push_back({4, 2}); // Two 4-rectangle ships
-    shipTypes.push_back({2, 3}); // Three 2-rectangle ships
-    shipTypes.push_back({1, 5}); // Five 1-rectangle ships
 
     std::random_device rd;
     std::mt19937 rng(rd());
 
-    for (const ShipType &st : shipTypes)
+    for (const ShipType &st : ShipHandler::getShipTypes())
     {
         for (int i = 0; i < st.number; i++)
         {

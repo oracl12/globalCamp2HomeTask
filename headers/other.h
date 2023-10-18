@@ -2,7 +2,7 @@
 
 #include <unistd.h>
 
-void Sleep(int seconds)
+inline void Sleep(int seconds)
 {
 #ifdef _WIN32
     Sleep(seconds * 1000);

@@ -1,9 +1,6 @@
 #include "../headers/ship.h"
 #include "../headers/player.h"
 
-int start_pos_x = 50;
-int start_pos_y = 550;
-
 extern int size;
 
 bool ShipHandler::IsMouseInRect(int mouseX, int mouseY, const Rect& rect) {
@@ -16,7 +13,7 @@ Ship* ShipHandler::findShipByMouse(int mouseX, int mouseY) {
     for (auto& ship : ships) {
         for (const Rect& rect : ship.rects) {
             if (IsMouseInRect(mouseX, mouseY, rect)) {
-                std::cout << " WE FOUND ship ITS: " << ship.id << std::endl;
+                std::cout << "Ship: ship found and it is: " << ship.id << std::endl;
                 return &ship; // Mouse is within a rectangle of this ship
             }
         }
@@ -29,6 +26,9 @@ int ShipHandler::getShipLengthById(const Ship& ship){
 }
 
 void ShipHandler::fillUpShips(){
+    // TODO: use function getShipTypes
+    int start_pos_x = 50;
+    int start_pos_y = 550;
     std::vector<Ship>& ships = ShipHandler::getShips();
 
     // big_ship
@@ -159,4 +159,14 @@ Ship* ShipHandler::getShipFromMatrix(int x, int y) {
     }
 
     return nullptr;
+}
+
+std::vector<ShipType> ShipHandler::getShipTypes(){
+    std::vector<ShipType> shipTypes = {
+        {5, 1}, // One 5-rectangle ship
+        {4, 2}, // Two 4-rectangle ships
+        {2, 3}, // Three 2-rectangle ships
+        {1, 5} // Five 1-rectangle ships
+    };
+    return shipTypes;
 }

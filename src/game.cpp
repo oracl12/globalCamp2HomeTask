@@ -54,19 +54,21 @@ LRESULT CALLBACK WindowCallback(
 	case WM_KEYDOWN:
 	{
 		if (currentlyMovingShip != nullptr) {
-			std::cout << "WE ARE IN SWITCH" << std::endl;
 			switch (wParam) {
         		case VK_LEFT:
-					// maybe repaint also in need
+					std::cout << "GAME: changing direction" << std::endl;
 					Player::changeDirection(*currentlyMovingShip, 'h');
                 	break;
             	case VK_RIGHT:
+					std::cout << "GAME: changing direction" << std::endl;
 					Player::changeDirection(*currentlyMovingShip, 'h');
                 	break;
             	case VK_UP:
+					std::cout << "GAME: changing direction" << std::endl;
 					Player::changeDirection(*currentlyMovingShip, 'v');
                 	break;
             	case VK_DOWN:
+					std::cout << "GAME: changing direction" << std::endl;
 					Player::changeDirection(*currentlyMovingShip, 'v');
                 	break;
             }
@@ -77,46 +79,49 @@ LRESULT CALLBACK WindowCallback(
 	{
 		auto currentPos = Input::getMousePosition(lParam);
 		
-		// Check if we are in range of ready button { 540, 640, 200, 60 }
 		if (currentPos.x < 740 && currentPos.x > 540 && currentPos.y > 640 && currentPos.y < 700 ){
-			std::cout << "CLicking on READY BUTTON" << std::endl;
+			std::cout << "Game: was clicked ready" << std::endl;
 			ready = true;
 		}
 
 		Ship* shipAtMouse = ShipHandler::findShipByMouse(currentPos.x, currentPos.y);
 
 		if (shipAtMouse == nullptr) {
-			std::cout << "There no ship at tile" << std::endl;
+			std::cout << "Game: There no ship at tile" << std::endl;
 		} else {
 			isDragging = true;
 			break;
 		}
 
 		if (currentPos.x < start_r_x || currentPos.x > (start_r_x + 500) || currentPos.y < 20 || currentPos.y > 520 ){
-			std::cout << "BREAK CAUSE OF siZE of matrix" << std::endl;
 			break;
 		}
 		
 		if (!playerStep){
-			std::cout << "BREAK CAUSE OF STEP" << std::endl;
+			std::cout << "Game: currently step of enemy" << std::endl;
 			break;
 		}
 		
-		// if (!Game::isShipPlacementFinished()){
-			// 	MessageBoxA(NULL, "Ship placement is not finished", "Placement error", MB_OK | MB_ICONINFORMATION);
-			// 	break;
-		// }
+		if (!Game::isShipPlacementFinished()){
+			#ifdef _WIN32
+			MessageBoxA(NULL, "Ship placement is not finished", "Placement error", MB_OK | MB_ICONINFORMATION);
+			#endif
+			std::cout << "Game: not finished placement" << std::endl;
+			break;
+		}
 
 		int x = (int)((currentPos.x - start_r_x) / 50);
 		int y = (int)((currentPos.y - 20) / 50);
 
-		// if we shoot correctly, continue shooting
 		if (Player::makeShot(x, y)){
 			break;
 		}
 
 		if (Game::isEndOfGame()){
+			#ifdef _WIN32
 			MessageBoxA(NULL, Game::getWinner() == 'y' ? "You are winner" : "Enemy wins", "Game ends", MB_OK | MB_ICONINFORMATION);
+			#endif
+			std::cout << "Game: SHUTTING down" << std::endl;
 			exit(1);
 		}
 
@@ -146,21 +151,21 @@ LRESULT CALLBACK WindowCallback(
 			Ship* shipAtMouse = ShipHandler::findShipByMouse(currentPos.x, currentPos.y);
 
 			if (shipAtMouse == nullptr) {
-				std::cout << "There no ship at tile" << std::endl;
+				std::cout << "Game: There no ship at tile" << std::endl;
 				break;
 			}
 
 			if (!shipAtMouse->avaible) {
-				std::cout << "This ship is unavaible" << std::endl;
+				std::cout << "Game: This ship is unavaible" << std::endl;
 				break;
 			}
 
 			if (!Player::placeShip(x, y, *shipAtMouse)){
-				std::cout << "UNABLE TO PLACE ship here" << std::endl;
+				std::cout << "Game: unable to place ship here" << std::endl;
 				break;
 			}
 
-			std::cout << "PLACING ship successfully" << std::endl;
+			std::cout << "Game: ship placed successfully" << std::endl;
 			shipAtMouse->avaible = false;
 			break;
 		}
@@ -180,21 +185,20 @@ LRESULT CALLBACK WindowCallback(
 		Ship* shipAtMouse = ShipHandler::findShipByMouse(currentPos.x, currentPos.y);
 		
 		if (shipAtMouse == nullptr) {
-			std::cout << "There no ship at tile" << std::endl;
+			std::cout << "Game: There no ship at tile" << std::endl;
 			break;
 		}
 
 		if (shipAtMouse->avaible) {
-			std::cout << "This ship is avaible. Cannot delete" << std::endl;
+			std::cout << "Game: this ship is avaible. Cannot delete" << std::endl;
 			break;
 		}
 
 		if (Player::removeShip(x, y, *shipAtMouse)) {
-			std::cout << "Removed ship successfully" << std::endl;
+			std::cout << "Game: removed ship successfully" << std::endl;
 		}
-		std::cout << "There no ship on this tile" << std::endl;
-
-	}break;
+		std::cout << "Game: There no ship on this tile" << std::endl;
+	} break;
 	case WM_RBUTTONUP:
 	case WM_MBUTTONDOWN:
 	case WM_MBUTTONUP:
@@ -234,43 +238,43 @@ LRESULT CALLBACK WindowCallback(
 }
 
 bool Game::isEndOfGame(){
-	bool flag = true; // all ships are fully hitten
+	bool allShipsSunk  = true; // all ships are fully hitten
 
 	// first check your ships are all dead
 	for (const Ship& ship : ShipHandler::getShips()){
 		for (const Rect& rect : ship.rects){
 			if (!rect.hitten){
-				flag = false; // there still is some boys
+				allShipsSunk = false; // there still is some boys
 				break;
 			}
 		}
 		
-		if (!flag) {
+		if (!allShipsSunk ) {
 			break;
 		}
 	}
 	
-	if (flag) {
+	if (allShipsSunk) {
 		setWinner('e');
 		return true;
 	}
 
-	flag = true;
+	allShipsSunk = true;
 
 	// then check enems matrix
 	for (int row = 0; row < 10; ++row) {
         for (int col = 0; col < 10; ++col) {
             if (Enemy::getPrivateMatrix()[row][col] == 2) {
-                return false; // Value 2 is present
+                return false;
             }
         }
 
-		if (!flag) {
+		if (!allShipsSunk) {
 			break;
 		}
     }
 
-	if (flag) {
+	if (allShipsSunk) {
 		setWinner('y');
 		return true;
 	}
@@ -287,6 +291,19 @@ bool Game::isShipPlacementFinished(){
 
 	return true;
 }
+
+// void Game::fillPrivateMatrix()
+// {
+// 	for (int i = 0; i < Game::matrixS; ++i)
+// 	{
+// 		for (int j = 0; j < Game::matrixS; ++j)
+// 		{
+// 			Player::getPrivateMatrix()[i][j] = -1;
+// 			if (gameMode == 'b')
+// 				Bot::getPublicMatrix()[i][j] = -1;
+// 		}
+// 	}
+// }
 
 void Game::startWindow()
 {
@@ -337,7 +354,6 @@ void Game::startWindow()
 
 		Renderer::setWindowHandle(windowHandle);
 
-		// init the clock
 		LARGE_INTEGER cpu_frequency;
 		QueryPerformanceFrequency(&cpu_frequency);
 
@@ -355,7 +371,6 @@ void Game::startWindow()
 
 			last_counter = current_counter;
 
-			// process windows messages
 			MSG message;
 			while (PeekMessage(&message, 0, 0, 0, PM_REMOVE))
 			{
@@ -363,7 +378,7 @@ void Game::startWindow()
 					running = false;
 
 				TranslateMessage(&message);
-				DispatchMessage(&message); // Send message to the WindowProc (WindowCallback)
+				DispatchMessage(&message);
 			}
 
 			// update & render

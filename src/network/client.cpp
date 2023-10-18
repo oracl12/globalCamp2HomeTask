@@ -18,12 +18,11 @@ extern void printMatrix(int matrix[][10]);
 void Client::runClient()
 {
     readyCheck();
-    // exchange
+
     receiveSendPrivateMatrix();
-    std::clog << "Matrix was exchange successfully" << std::endl;
 
     bool received = false;
-    // // after that exchange each time when step, so
+
     while (true) {
         {
             // on receive of server step -> playerStep = true;
@@ -61,7 +60,7 @@ void Client::readyCheck()
             if (bytesRead <= 0)
             {
                 Sleep(1);
-                std::cerr << "Server is dead" << std::endl;
+                std::cerr << "CLIENT: SERVER dead" << std::endl;
                 break;
             }
             sentReadyToEnemy = true;
@@ -73,7 +72,7 @@ void Client::readyCheck()
             if (bytesSent <= 0)
             {
                 Sleep(1);
-                std::cerr << "Server is dead" << std::endl;
+                std::cerr << "SERVER: dead" << std::endl;
                 break;
             }
             std::clog << "BOTH server and client are ready" << std::endl;
@@ -85,25 +84,17 @@ void Client::readyCheck()
 void Client::receivePublicMatrix()
 {
     int matrix[10][10];
-    std::cout << "Public Matrix waiting to receive" << std::endl;
+    std::cout << "CLIENT: Public Matrix: waiting to receive" << std::endl;
     int bytesReceived = recv(clientSocket, (char*)matrix, sizeof(matrix), 0);
     if (bytesReceived == SOCKET_ERROR) {
         std::cerr << "Receive failed" << std::endl;
     } else {
-        std::cout << "Public Matrix received successfully" << std::endl;
+        std::cout << "CLIENT: Public Matrix: received successfully" << std::endl;
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 std::cout << matrix[i][j] << ' ';
                 Player::getPublicMatrix()[i][j] = matrix[i][j];
-            }
-            std::cout << std::endl;
-        }
-
-        std::cout << "ENEMYs public:" << std::endl;
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                std::cout << Player::getPublicMatrix()[i][j] << ' ';
             }
             std::cout << std::endl;
         }
@@ -119,13 +110,13 @@ void Client::sendPublicMatrix()
         }
     }
 
-    std::cout << "Public Matrix is about to sent" << std::endl;
+    std::cout << "CLIENT: Public Matrix: about to sent" << std::endl;
 
     int bytesSent = send(clientSocket, (char*)matrix, sizeof(matrix), 0);
     if (bytesSent == SOCKET_ERROR) {
-        std::cerr << "Send failed" << std::endl;
+        std::cerr << "CLIENT: Public Matrix: send failed" << std::endl;
     } else {
-        std::cout << "Public Matrix sent successfully" << std::endl;
+        std::cout << "CLIENT: Public Matrix: sent successfully" << std::endl;
     }
 }
 
@@ -134,22 +125,14 @@ void Client::receiveSendPrivateMatrix()
     int matrix[10][10];
     int bytesReceived = recv(clientSocket, (char*)matrix, sizeof(matrix), 0);
     if (bytesReceived == SOCKET_ERROR) {
-        std::cerr << "Receive failed" << std::endl;
+        std::cerr << "CLIENT: Private Matrix: receive failed" << std::endl;
     } else {
-        std::cout << "Matrix received successfully" << std::endl;
+        std::cout << "CLIENT: Private Matrix: received successfully" << std::endl;
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 std::cout << matrix[i][j] << ' ';
                 Enemy::getPrivateMatrix()[i][j] = matrix[i][j];
-            }
-            std::cout << std::endl;
-        }
-
-        std::cout << "ENEMYs:" << std::endl;
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                std::cout << Enemy::getPrivateMatrix()[i][j] << ' ';
             }
             std::cout << std::endl;
         }
@@ -163,9 +146,9 @@ void Client::receiveSendPrivateMatrix()
 
     int bytesSent = send(clientSocket, (char*)matrix, sizeof(matrix), 0);
     if (bytesSent == SOCKET_ERROR) {
-        std::cerr << "Send failed" << std::endl;
+        std::cerr << "CLIENT: Private Matrix: send failed" << std::endl;
     } else {
-        std::cout << "Matrix sent successfully" << std::endl;
+        std::cout << "CLIENT: Private Matrix: sent successfully" << std::endl;
     }
 }
 
@@ -179,13 +162,14 @@ Client::Client(int port)
 
     connectToSocket(clientSocket, port);
 
-    std::cout << "Connected to the server." << std::endl;
+    std::cout << "CLIENT: Connected to the server." << std::endl;
 
     clientThread = std::thread(&runClient, this);
 }
 
 Client::~Client()
 {
+    std::cout << "CLIENT: SHUTTING DOWN" << std::endl;
     if (clientThread.joinable()) {
         clientThread.join();
     }

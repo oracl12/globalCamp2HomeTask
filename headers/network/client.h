@@ -1,9 +1,10 @@
 #pragma once
 
-#include "socket_utils.h"
-#include "../game.h"
 #include <thread>
 #include <mutex>
+
+#include "socket_utils.h"
+#include "../game.h"
 
 extern bool ready;
 extern bool playerStep;
