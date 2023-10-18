@@ -1,7 +1,11 @@
 #pragma once
 
-#include <windows.h>
-#include <windowsx.h>
+#ifdef _WIN32
+	#include <windows.h>
+	#include <windowsx.h>
+#else
+
+#endif
 
 class Input
 {

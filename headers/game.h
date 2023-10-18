@@ -1,18 +1,23 @@
 #pragma once
 
-#ifndef UNICODE
-#define UNICODE
-#define UNICODE_WAS_UNDEFINED
-#endif
+#ifdef _WIN32
+	#ifndef UNICODE
+		#define UNICODE
+		#define UNICODE_WAS_UNDEFINED
+	#endif
 
-#include <windows.h>
+	#include <windows.h>
+	#include <string>
 
-#ifdef UNICODE_WAS_UNDEFINED
-#undef UNICODE
+	#ifdef UNICODE_WAS_UNDEFINED
+		#undef UNICODE
+	#endif
+#else
+	#include <string>
 #endif
 
 #define TITLE L"Warship Battle"
-#include <string>
+
 #include <functional>
 
 #include "../headers/renderer.h"

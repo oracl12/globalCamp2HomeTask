@@ -2,14 +2,17 @@
 #include "../headers/ship.h"
 #include "../headers/player.h"
 #include "../headers/game.h"
+#include "../headers/other.h"
 
-#include <random>
+#ifdef _WIN32
 #include <windows.h>
+#else
+
+#endif
 #include <iostream>
 #include <vector>
 #include <string>
-
-//reformat
+#include <random>
 
 extern int playerStep;
 
@@ -262,8 +265,10 @@ void Bot::entry_point()
     if (currentlySearching)
     {
         if (Game::isEndOfGame()){
+            #ifdef _WIN32
 			MessageBoxA(NULL, Game::getWinner() == 'y' ? "You are winner" : "Enemy wins", "Game ends", MB_OK | MB_ICONINFORMATION);
-			Sleep(5000);
+            #endif
+			Sleep(5);
 			exit(1);
 		}
 

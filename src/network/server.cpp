@@ -3,9 +3,11 @@
 #include <mutex>
 #include <algorithm>
 #include <cstring>
+
 #include "../../headers/network/server.h"
 #include "../../headers/player.h"
 #include "../../headers/enemy.h"
+#include "../../headers/other.h"
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -44,7 +46,7 @@ void Server::runServer()
         if (clientSocket == INVALID_SOCKET)
         {
             std::cerr << "Error accepting connection." << std::endl;
-            Sleep(3000);
+            Sleep(3);
             break;
         }
 
@@ -102,7 +104,7 @@ void Server::readyCheck(int clientSocket)
             int bytesSent = send(clientSocket, dataSent, strlen(dataSent), 0);
             if (bytesSent <= 0)
             {
-                Sleep(1000);
+                Sleep(1);
                 std::cerr << "CLIENT disconected" << std::endl;
                 break;
             }
@@ -115,7 +117,7 @@ void Server::readyCheck(int clientSocket)
             buffer[bytesRead] = '\0';
             if (bytesRead <= 0)
             {
-                Sleep(1000);
+                Sleep(1);
                 std::cerr << "Client disconnected" << std::endl;
                 break;
             }

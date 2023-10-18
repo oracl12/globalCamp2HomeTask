@@ -4,6 +4,7 @@
 #include "../../headers/network/client.h"
 #include "../../headers/player.h"
 #include "../../headers/enemy.h"
+#include "../../headers/other.h"
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -59,7 +60,7 @@ void Client::readyCheck()
             buffer[bytesRead] = '\0';
             if (bytesRead <= 0)
             {
-                Sleep(1000);
+                Sleep(1);
                 std::cerr << "Server is dead" << std::endl;
                 break;
             }
@@ -71,7 +72,7 @@ void Client::readyCheck()
             int bytesSent = send(clientSocket, dataSent, strlen(dataSent), 0);
             if (bytesSent <= 0)
             {
-                Sleep(1000);
+                Sleep(1);
                 std::cerr << "Server is dead" << std::endl;
                 break;
             }
