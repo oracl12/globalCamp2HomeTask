@@ -24,6 +24,7 @@ Ship* currentlyMovingShip;
 
 Game::Game() {}
 
+#ifdef _WIN32
 LRESULT CALLBACK WindowCallback(
 	HWND windowHandle,
 	UINT message,
@@ -379,3 +380,6 @@ void Game::startWindow()
 		}
 	}
 }
+#else
+
+#endif

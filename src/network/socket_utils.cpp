@@ -1,5 +1,6 @@
 #include <iostream>
 #include "../../headers/network/socket_utils.h"
+#include "../../headers/other.h"
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -33,7 +34,7 @@ void SocketUtil::WSAStartupIfNeeded()
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
     {
         std::cerr << "Failed to initialize Winsock." << std::endl;
-        Sleep(3000);
+        Sleep(3);
         exit(1);
     }
 #endif
@@ -45,7 +46,7 @@ int SocketUtil::initsSocket()
     if (clientSocket == INVALID_SOCKET)
     {
         std::cerr << "Error creating socket." << std::endl;
-        Sleep(3000);
+        Sleep(3);
         WSACleanupIfNeeded();
         exit(1);
     }
@@ -68,7 +69,7 @@ void SocketUtil::bindSocket(int socket, int port)
     if (bind(socket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
     {
         std::cerr << "Error binding socket." << std::endl;
-        Sleep(3000);
+        Sleep(3);
         closeSocket(socket);
         WSACleanupIfNeeded();
         exit(1);
@@ -80,7 +81,7 @@ void SocketUtil::listenToSocket(int socket)
     if (listen(socket, 1) == SOCKET_ERROR)
     {
         std::cerr << "Error listening for connections." << std::endl;
-        Sleep(3000);
+        Sleep(3);
         closeSocket(socket);
         WSACleanupIfNeeded();
         exit(1);
@@ -94,7 +95,7 @@ void SocketUtil::connectToSocket(int socket, int port)
     if (connect(socket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
     {
         std::cerr << "Error connecting to the server." << std::endl;
-        Sleep(3000);
+        Sleep(3);
         closeSocket(socket);
         WSACleanupIfNeeded();
         exit(1);

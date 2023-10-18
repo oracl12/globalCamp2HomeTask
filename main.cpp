@@ -3,13 +3,13 @@
 #define UNICODE_WAS_UNDEFINED
 #endif
 
-#include <windows.h>
+#ifdef _WIN32
+	#include <windows.h>
+#endif
 
 #ifdef UNICODE_WAS_UNDEFINED
 #undef UNICODE
 #endif
-
-// #include <memory>
 
 #include "headers/game.h"
 #include "headers/renderer.h"
@@ -19,6 +19,7 @@
 #include "headers/player.h"
 #include "headers/debug.h"
 #include "headers/command_line.h"
+#include "headers/other.h"
 #include "headers/network/client.h"
 #include "headers/network/server.h"
 #include "headers/network/socket_utils.h"
@@ -31,7 +32,9 @@ char gameMode;
 bool ready = false;
 bool host = false;
 
+#ifdef _WIN32
 extern HDC device_context;
+#endif
 extern bool playerStep;
 
 void fillPrivateMatrix()
@@ -47,9 +50,18 @@ void fillPrivateMatrix()
 	}
 }
 
+#ifdef _WIN32
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
+#else
+int main(int argc, char* argv[])
+#endif
 {
-	CommandLineHandler commandLineHandler;
+
+	#ifdef _WIN32
+		CommandLineHandler commandLineHandler;
+	#else
+		CommandLineHandler commandLineHandler(argc, argv);
+	#endif
 
 	Debug* debug;
 	Server* server;
@@ -84,13 +96,14 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	} else {
 		std::cerr << "GAMEMODE - UNDEFINED" << std::endl;
 		std::cerr << "EXItiNG" << std::endl;
-		Sleep(1000);
+		Sleep(1);
 		return 0;
 	}
 
 	std::vector<Ship> &ships = ShipHandler::getShips();
 	ShipHandler::fillUpShips();
 
+#ifdef _WIN32
 	Game::setGameUpdate([&](float delta)
 						{
 		wchar_t charBuffer[256]; 
@@ -111,7 +124,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		}
 
 		// left table
-		// якщо розстановка завершилася то рендерити паблік
 		for (int line = 0; line < MATRIX_S; line++) {
 			for (int row = 0; row < MATRIX_S; row++) {
 				RGBColor color;
@@ -136,7 +148,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		}
 
 		// button ready
-		// add condition to disable it when with bot
 		Renderer::FillRectangleWithBorder({ 540, 640, 200, 60 }, { 102, 51, 153 });
 
 		// just line between two tables
@@ -177,7 +188,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	Renderer::SetClearColor({200, 120, 45});
 
 	Game::start();
-
+	#endif
 	if (debug != nullptr) 
 		delete debug;
 	

@@ -1,10 +1,10 @@
 CC := g++
 
 ifeq ($(OS),Windows_NT)
-CFLAGS := -mwindows
+CFLAGS := -mwindows -pthread -lPdh -std=c++17
 LIBS = -lws2_32
 else
-CFLAGS := -std=c++11 -pthread -lPdh
+CFLAGS := -std=c++17
 LIBS = -lws2_32
 endif
 
