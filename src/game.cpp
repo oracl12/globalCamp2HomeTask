@@ -5,16 +5,12 @@
 #include "../headers/player.h"
 #include "../headers/enemy.h"
 #include "../headers/bot.h"
+#include "../headers/conf.h"
 
 #include <iostream>
 #include <mutex>
 
-extern int start_l_x;
-extern int start_r_x;
-extern int size;
-extern char gameMode;
 extern bool ready;
-extern bool host;
 
 std::mutex exchangeMutex;
 bool forceExhangeMatrix = false;
@@ -93,7 +89,7 @@ LRESULT CALLBACK WindowCallback(
 			break;
 		}
 
-		if (currentPos.x < start_r_x || currentPos.x > (start_r_x + 500) || currentPos.y < 20 || currentPos.y > 520 ){
+		if (currentPos.x < Conf::start_r_x || currentPos.x > (Conf::start_r_x + 500) || currentPos.y < 20 || currentPos.y > 520 ){
 			break;
 		}
 		
@@ -108,23 +104,24 @@ LRESULT CALLBACK WindowCallback(
 			break;
 		}
 
-		int x = (int)((currentPos.x - start_r_x) / 50);
+		int x = (int)((currentPos.x - Conf::start_r_x) / 50);
 		int y = (int)((currentPos.y - 20) / 50);
 
 		if (Player::makeShot(x, y)){
 			break;
 		}
 
-		if (Game::isEndOfGame()){
-			MessageBoxA(NULL, Game::getWinner() == 'y' ? "You are winner" : "Enemy wins", "Game ends", MB_OK | MB_ICONINFORMATION);
+		auto possibleWinner = Game::isEndOfGame();
+		if (possibleWinner != Game::Winner::NONE){
+			MessageBoxA(NULL, possibleWinner == Game::Winner::PLAYER ? "You are winner" : "Enemy wins", "Game ends", MB_OK | MB_ICONINFORMATION);
 			std::cout << "Game: SHUTTING down" << std::endl;
 			exit(1);
 		}
 
-		if (gameMode == 'b') {
+		if (Conf::gameMode == Conf::GameMode::BOT) {
 			playerStep = false;
 			Bot::entry_point();
-		} else if (gameMode == 'n') {
+		} else if (Conf::gameMode == Conf::GameMode::NETWORK) {
 			{
 				std::unique_lock<std::mutex> lock(exchangeMutex);
 				forceExhangeMatrix = true;
@@ -137,11 +134,11 @@ LRESULT CALLBACK WindowCallback(
 			isDragging = false;
 			auto currentPos = Input::getMousePosition(lParam);
 		
-			if (currentPos.x < start_l_x || currentPos.x > (start_l_x + 500) || currentPos.y < 20 || currentPos.y > 520 ){
+			if (currentPos.x < Conf::start_l_x || currentPos.x > (Conf::start_l_x + 500) || currentPos.y < 20 || currentPos.y > 520 ){
 				break;
 			}
 
-			int x = (int)((currentPos.x - start_l_x) / 50);
+			int x = (int)((currentPos.x - Conf::start_l_x) / 50);
 			int y = (int)((currentPos.y - 20) / 50);
 
 			Ship* shipAtMouse = ShipHandler::findShipByMouse(currentPos.x, currentPos.y);
@@ -171,11 +168,11 @@ LRESULT CALLBACK WindowCallback(
 	case WM_RBUTTONDOWN:{
 		auto currentPos = Input::getMousePosition(lParam);
 
-		if (currentPos.x < start_l_x || currentPos.x > (start_l_x + 500) || currentPos.y < 20 || currentPos.y > 520 ){
+		if (currentPos.x < Conf::start_l_x || currentPos.x > (Conf::start_l_x + 500) || currentPos.y < 20 || currentPos.y > 520 ){
 			break;
 		}
 
-		int x = (int)((currentPos.x - start_l_x) / 50);
+		int x = (int)((currentPos.x - Conf::start_l_x) / 50);
 		int y = (int)((currentPos.y - 20) / 50);
 
 		Ship* shipAtMouse = ShipHandler::findShipByMouse(currentPos.x, currentPos.y);
@@ -233,7 +230,7 @@ LRESULT CALLBACK WindowCallback(
 	return result;
 }
 
-bool Game::isEndOfGame(){
+Game::Winner Game::isEndOfGame(){
 	bool allShipsSunk  = true; // all ships are fully hitten
 
 	// first check your ships are all dead
@@ -251,17 +248,16 @@ bool Game::isEndOfGame(){
 	}
 	
 	if (allShipsSunk) {
-		setWinner('e');
-		return true;
+		return Game::Winner::ENEMY;
 	}
 
 	allShipsSunk = true;
 
 	// then check enems matrix
-	for (int row = 0; row < 10; ++row) {
-        for (int col = 0; col < 10; ++col) {
+	for (int row = 0; row < Conf::matrixS; ++row) {
+        for (int col = 0; col < Conf::matrixS; ++col) {
             if (Enemy::getPrivateMatrix()[row][col] == 2) {
-                return false;
+                return Game::Winner::NONE;
             }
         }
 
@@ -271,11 +267,10 @@ bool Game::isEndOfGame(){
     }
 
 	if (allShipsSunk) {
-		setWinner('y');
-		return true;
+		return Game::Winner::PLAYER;
 	}
 
-	return false;
+	return Game::Winner::NONE;
 }
 
 bool Game::isShipPlacementFinished(){
@@ -320,7 +315,7 @@ void Game::startWindow()
 	windowHandle = CreateWindowEx(
 		0,
 		className,
-		(host ? (windowTitle + L"-HOST") : windowTitle).c_str(),
+		(Conf::host ? (Conf::windowTitle + L"-HOST") : Conf::windowTitle).c_str(),
 		(WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX) | WS_VISIBLE,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,

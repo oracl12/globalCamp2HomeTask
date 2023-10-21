@@ -1,13 +1,9 @@
 #include "../headers/player.h"
 #include "../headers/bot.h"
 #include "../headers/ship.h"
+#include "../headers/conf.h"
 
 #include <iostream>
-
-extern int start_pos_x;
-extern int start_pos_y;
-
-extern int size;
 
 bool Player::makeShot(int x, int y)
 {
@@ -42,14 +38,14 @@ void Player::changeShipPosition(int mouseX, int mouseY, Ship* ship){
     std::cout << "Player: changing position" << std::endl;
     if (ship->relative_position == 'h') {
         for (Rect& rect : ship->rects) {
-            rect.x = mouseX - 20 + counter * size;
+            rect.x = mouseX - 20 + counter * Conf::size;
             rect.y = mouseY - 20;
             counter++;
         }
     } else if (ship->relative_position == 'v') {
         for (Rect& rect : ship->rects) {
             rect.x = mouseX - 20;
-            rect.y = mouseY - 20 + counter * size;
+            rect.y = mouseY - 20 + counter * Conf::size;
             counter++;
         }
     }

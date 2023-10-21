@@ -2,7 +2,6 @@
 
 CommandLineHandler::CommandLineHandler()
 {
-
     szArgList = CommandLineToArgvW(GetCommandLine(), &argCount);
 
     if (szArgList == NULL)
@@ -13,29 +12,29 @@ CommandLineHandler::CommandLineHandler()
 
     for (int i = 0; i < argCount; i++)
     {
-        if (wmemcmp(szArgList[i], L"-debug", wcslen(L"-debug")) == 0) // remove here wcslen
+        if (wmemcmp(szArgList[i], L"-debug", 6) == 0)
         {
-            debug = true;
+            Conf::debug = true;
         }
 
-        if (wmemcmp(szArgList[i], L"-host", wcslen(L"-host")) == 0) // remove here wcslen
+        if (wmemcmp(szArgList[i], L"-host", 5) == 0)
         {
-            host = true;
+            Conf::host = true;
         }
 
-        if (wmemcmp(szArgList[i], L"--gamemode=network", wcslen(L"--gamemode=network")) == 0) // remove here wcslen
+        if (wmemcmp(szArgList[i], L"--gamemode=network", 19) == 0)
         {
-            gameMode = 'n';
+            Conf::gameMode = Conf::GameMode::NETWORK;
         }
 
-        if (wcsncmp(szArgList[i], L"--port=", wcslen(L"--port=")) == 0)
+        if (wcsncmp(szArgList[i], L"--port=", 8) == 0)
         {
-            std::wstring portValue = szArgList[i] + wcslen(L"--port=");
+            std::wstring portValue = szArgList[i] + 8;
 
             if (!portValue.empty())
             {
-                port = std::stoi(portValue);
-                std::wcout << L"Port number: " << port << std::endl;
+                Conf::port = std::stoi(portValue);
+                std::wcout << L"Port number: " << Conf::port << std::endl;
             }
             else
             {
@@ -43,9 +42,9 @@ CommandLineHandler::CommandLineHandler()
             }
         }
 
-        if (wmemcmp(szArgList[i], L"--gamemode=bot", wcslen(L"--gamemode=bot")) == 0) // remove here wcslen
+        if (wmemcmp(szArgList[i], L"--gamemode=bot", 15) == 0)
         {
-            gameMode = 'b';
+            Conf::gameMode = Conf::GameMode::BOT;
         }
     }
 };

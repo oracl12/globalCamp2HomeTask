@@ -1,20 +1,20 @@
 #pragma once
 
 #include "ship.h"
-
+#include "conf.h"
 
 class Player
 {
 public:
-    static inline int (*getPrivateMatrix())[10] // reokace 10 with matrix size
+    static inline int (*getPrivateMatrix())[Conf::matrixS] // reokace 10 with matrix size
     {
-        static int player_warship_matrix_private[10][10];
+        static int player_warship_matrix_private[Conf::matrixS][Conf::matrixS];
         return player_warship_matrix_private;
     };
 
-    static inline int (*getPublicMatrix())[10]
+    static inline int (*getPublicMatrix())[Conf::matrixS]
     {
-        static int player_warship_matrix_public[10][10];
+        static int player_warship_matrix_public[Conf::matrixS][Conf::matrixS];
         return player_warship_matrix_public;
     };
 

@@ -14,8 +14,6 @@
 #include <string>
 #include <functional>
 
-#define TITLE L"Warship Battle"
-
 #include "../headers/renderer.h"
 
 class Game
@@ -30,8 +28,6 @@ private:
 	HINSTANCE hInstance;
 	HWND windowHandle = 0;
 	bool running = false;
-	// TODO change to struct
-	char winner; // y - you, e - enemy
 
 	int windowWidth = Renderer::width;
 	int windowHeight = Renderer::height;
@@ -46,6 +42,13 @@ public:
 
 	~Game() {}
 
+	enum class Winner
+	{
+		PLAYER,
+		ENEMY,
+		NONE
+	};
+
 	inline static Game &getInstance()
 	{
 		static Game game;
@@ -59,23 +62,11 @@ public:
 
 	inline static void setGameUpdate(const std::function<void(float delta)> &update) { getInstance().update = update; }
 
-	inline static std::wstring getWindowTitle() { return getInstance().windowTitle; }
 	inline static int getWindowWidth() { return getInstance().windowWidth; }
 	inline static int getWindowHeight() { return getInstance().windowHeight; }
-	inline static char getWinner() { return getInstance().winner; }
 
-	static bool isEndOfGame();
+	static Game::Winner isEndOfGame();
 	static bool isShipPlacementFinished();
-
-	static const int matrixS = 10;
-	std::wstring windowTitle = TITLE;
-
 private:
 	void startWindow();
-
-	inline static void setWinner(char win)
-	{
-		if (win == 'e' || win == 'y')
-			getInstance().winner = win;
-	}
 };

@@ -249,8 +249,9 @@ void Bot::entry_point()
     if (currentlySearching)
     {
         std::cout << "BOT: Entry" << std::endl;
-        if (Game::isEndOfGame()){
-			MessageBoxA(NULL, Game::getWinner() == 'y' ? "You are winner" : "Enemy wins", "Game ends", MB_OK | MB_ICONINFORMATION);
+        auto possibleWinner = Game::isEndOfGame();
+        if (possibleWinner != Game::Winner::NONE){
+			MessageBoxA(NULL, possibleWinner == Game::Winner::PLAYER ? "You are winner" : "Enemy wins", "Game ends", MB_OK | MB_ICONINFORMATION);
 
 			Sleep(5000);
 			exit(1);

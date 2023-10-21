@@ -1,8 +1,6 @@
 #include "../headers/ship.h"
 #include "../headers/player.h"
 
-extern int size;
-
 bool ShipHandler::IsMouseInRect(int mouseX, int mouseY, const Rect& rect) {
     return (mouseX >= rect.x && mouseX <= (rect.x + rect.width) &&
             mouseY >= rect.y && mouseY <= (rect.y + rect.height));
@@ -22,12 +20,10 @@ Ship* ShipHandler::findShipByMouse(int mouseX, int mouseY) {
 }
 
 int ShipHandler::getShipLengthById(const Ship& ship){
-    return ship.rects.size() * size;
+    return ship.rects.size() * Conf::size;
 }
 
 void ShipHandler::fillUpShips(){
-    // TODO: use function getShipTypes
-    // the same as in qt version
     int start_pos_x = 50;
     int start_pos_y = 550;
     std::vector<Ship>& ships = ShipHandler::getShips();
@@ -36,16 +32,16 @@ void ShipHandler::fillUpShips(){
     ships.push_back(
         { "big_ship",
             { 
-                {start_pos_x, start_pos_y, size, size},
-                {start_pos_x + size, start_pos_y, size, size},
-                {start_pos_x + 2 * size, start_pos_y, size, size},
-                {start_pos_x + 3 * size, start_pos_y, size, size},
-                {start_pos_x + 4 * size, start_pos_y, size, size}
+                {start_pos_x, start_pos_y, Conf::size, Conf::size},
+                {start_pos_x + Conf::size, start_pos_y, Conf::size, Conf::size},
+                {start_pos_x + 2 * Conf::size, start_pos_y, Conf::size, Conf::size},
+                {start_pos_x + 3 * Conf::size, start_pos_y, Conf::size, Conf::size},
+                {start_pos_x + 4 * Conf::size, start_pos_y, Conf::size, Conf::size}
             }
         }
     );
 
-    start_pos_x += 5 * size + size;
+    start_pos_x += 5 * Conf::size + Conf::size;
 
     // medium_ship
     for (int i = 0; i < 2; i++) {
@@ -53,10 +49,10 @@ void ShipHandler::fillUpShips(){
             { 
                 "medium_ship_" + std::to_string(i + 1),
                 { 
-                    {start_pos_x, start_pos_y, size, size},
-                    {start_pos_x + size, start_pos_y, size, size},
-                    {start_pos_x + 2 * size, start_pos_y, size, size},
-                    {start_pos_x + 3 * size, start_pos_y, size, size}
+                    {start_pos_x, start_pos_y, Conf::size, Conf::size},
+                    {start_pos_x + Conf::size, start_pos_y, Conf::size, Conf::size},
+                    {start_pos_x + 2 * Conf::size, start_pos_y, Conf::size, Conf::size},
+                    {start_pos_x + 3 * Conf::size, start_pos_y, Conf::size, Conf::size}
                 }
             }
         );
@@ -70,21 +66,21 @@ void ShipHandler::fillUpShips(){
             { 
                 "small_ship_" + std::to_string(i + 1),
                 { 
-                    {start_pos_x, start_pos_y, size, size},
-                    {start_pos_x + size, start_pos_y, size, size}
+                    {start_pos_x, start_pos_y, Conf::size, Conf::size},
+                    {start_pos_x + Conf::size, start_pos_y, Conf::size, Conf::size}
                 }
             }
         );
     };
 
-    start_pos_x += size * 3;
+    start_pos_x += Conf::size * 3;
     // tiny_ship
     for (int i = 0; i < 5; i++) {
         ships.push_back(
             { 
                 "tiny_ship_" + std::to_string(i + 1),
                 { 
-                    {start_pos_x, start_pos_y, size, size}
+                    {start_pos_x, start_pos_y, Conf::size, Conf::size}
                 }
             }
         );

@@ -16,22 +16,17 @@
 #include "headers/bot.h"
 #include "headers/player.h"
 #include "headers/debug.h"
+#include "headers/conf.h"
 #include "headers/command_line.h"
 #include "headers/network/client.h"
 #include "headers/network/server.h"
 #include "headers/network/socket_utils.h"
 
-int size = 50;
-int start_l_x = 75;
-int start_r_x = 740 + 6;
-char gameMode;
+// this is possible shared variables
 bool ready = false;
-bool host = false;
 
 extern bool playerStep;
 
-// public should be rerendered (in chamnge of private) only in case that placement is finished
-// take one more unnesesary shot in right side
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
 {
 	CommandLineHandler commandLineHandler;
@@ -40,37 +35,28 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	Server* server;
 	Client* client;
 
-	if(commandLineHandler.getDebugStatus()) {
+	if (Conf::debug) {
 		debug = new Debug;
 	}
 
-	if (commandLineHandler.getGameMode() == 'b') {
+	if (Conf::gameMode == Conf::GameMode::BOT) {
 		std::clog << "GAMEMODE - BOT" << std::endl;
 		playerStep = true;
-		gameMode = 'b';
 		Bot::generateShipsOnMatrix();
-	} else if (commandLineHandler.getGameMode() == 'n') {
+	} else {
 		std::clog << "GAMEMODE - NETWORK" << std::endl;
-		int port = commandLineHandler.getPort();
-		std::clog << "PORT     - "<< port << std::endl;
-		gameMode = 'n';
+		std::clog << "PORT     - "<< Conf::port << std::endl;
 
-		if (commandLineHandler.isHost())
+		if (Conf::host)
 		{
-			host = true;
 			playerStep = true;
-			server = new Server(port);
+			server = new Server(Conf::port);
 			std::cout << "SERVER is ruNNING" << std::endl;
 		} else {
 			playerStep = false;
-			client = new Client(port);
+			client = new Client(Conf::port);
 			std::cout << "CLIENT is ruNNING" << std::endl;
 		}
-	} else {
-		std::cerr << "GAMEMODE - UNDEFINED" << std::endl;
-		std::cerr << "EXItiNG" << std::endl;
-		Sleep(1000);
-		return 0;
 	}
 
 	std::vector<Ship> &ships = ShipHandler::getShips();
@@ -96,8 +82,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		}
 
 		// left table
-		for (int line = 0; line < Game::matrixS; line++) {
-			for (int row = 0; row < Game::matrixS; row++) {
+		for (int line = 0; line < Conf::matrixS; line++) {
+			for (int row = 0; row < Conf::matrixS; row++) {
 				RGBColor color;
 				switch ((ready ? Player::getPublicMatrix() : Player::getPrivateMatrix())[line][row]) {
 					case -1: // sector is cleared
@@ -114,8 +100,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 				}
 
 				Renderer::FillRectangleWithBorder(
-					{ start_l_x + row * size, 20 + line * size,
-					 size, size },  color);
+					{ Conf::start_l_x + row * Conf::size, 20 + line * Conf::size,
+					 Conf::size, Conf::size },  color);
 			}
 		}
 
@@ -126,8 +112,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		Renderer::FillRectangle( { 1280 / 2 - 2, 0, 4, 600 }, { 255, 5, 5 });
 
 		// right table
-		for (int line = 0; line < Game::matrixS; line++) {
-			for (int row = 0; row < Game::matrixS; row++) {
+		for (int line = 0; line < Conf::matrixS; line++) {
+			for (int row = 0; row < Conf::matrixS; row++) {
 				RGBColor color;
 				switch (Enemy::getPublicMatrix()[line][row]) {
 					case -1: // sector is cleared
@@ -144,8 +130,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 				} 
 
 				Renderer::FillRectangleWithBorder(
-					{ start_r_x + row * size, 20 + line * size,
-					 size, size }, color);
+					{ Conf::start_r_x + row * Conf::size, 20 + line * Conf::size,
+					 Conf::size, Conf::size }, color);
 			}
 		}
 
