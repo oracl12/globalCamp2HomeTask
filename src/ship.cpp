@@ -27,6 +27,7 @@ int ShipHandler::getShipLengthById(const Ship& ship){
 
 void ShipHandler::fillUpShips(){
     // TODO: use function getShipTypes
+    // the same as in qt version
     int start_pos_x = 50;
     int start_pos_y = 550;
     std::vector<Ship>& ships = ShipHandler::getShips();

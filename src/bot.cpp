@@ -1,8 +1,4 @@
-#ifdef _WIN32
 #include <windows.h>
-#else
-
-#endif
 #include <iostream>
 #include <vector>
 #include <string>
@@ -12,7 +8,6 @@
 #include "../headers/ship.h"
 #include "../headers/player.h"
 #include "../headers/game.h"
-#include "../headers/other.h"
 
 extern int playerStep;
 
@@ -255,10 +250,9 @@ void Bot::entry_point()
     {
         std::cout << "BOT: Entry" << std::endl;
         if (Game::isEndOfGame()){
-            #ifdef _WIN32
 			MessageBoxA(NULL, Game::getWinner() == 'y' ? "You are winner" : "Enemy wins", "Game ends", MB_OK | MB_ICONINFORMATION);
-            #endif
-			Sleep(5);
+
+			Sleep(5000);
 			exit(1);
 		}
 

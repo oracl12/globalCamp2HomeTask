@@ -3,19 +3,12 @@
 #include <mutex>
 #include <algorithm>
 #include <cstring>
+#include <winsock2.h>
+#include <windows.h>
 
 #include "../../headers/network/server.h"
 #include "../../headers/player.h"
 #include "../../headers/enemy.h"
-#include "../../headers/other.h"
-
-#ifdef _WIN32
-#include <winsock2.h>
-#include <windows.h>
-#else
-#include <arpa/inet.h>
-#include <signal.h>
-#endif
 
 void printMatrix(int matrix[][10])
 {
@@ -29,24 +22,19 @@ void printMatrix(int matrix[][10])
 	}
 }
 
-
 void Server::runServer()
 {
     while (true)
     {
         std::cout << "WE ARE IN RUNSERVER" << std::endl;
         sockaddr_in clientAddr;
-#ifdef _WIN32
         int clientAddrLen = sizeof(clientAddr);
-#else
-        socklen_t clientAddrLen = sizeof(clientAddr);
-#endif
         int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddr, &clientAddrLen);
 
         if (clientSocket == INVALID_SOCKET)
         {
             std::cerr << "Error accepting connection." << std::endl;
-            Sleep(3);
+            Sleep(3000);
             break;
         }
 
@@ -104,7 +92,7 @@ void Server::readyCheck(int clientSocket)
             int bytesSent = send(clientSocket, dataSent, strlen(dataSent), 0);
             if (bytesSent <= 0)
             {
-                Sleep(1);
+                Sleep(1000);
                 std::cerr << "CLIENT disconected" << std::endl;
                 break;
             }
@@ -117,7 +105,7 @@ void Server::readyCheck(int clientSocket)
             buffer[bytesRead] = '\0';
             if (bytesRead <= 0)
             {
-                Sleep(1);
+                Sleep(1000);
                 std::cerr << "Client disconnected" << std::endl;
                 break;
             }
@@ -218,7 +206,7 @@ Server::Server(int port)
 {
     std::clog << "STARTING SERVER" << std::endl;
 
-    WSAStartupIfNeeded();
+    WSAStartUp();
 
     serverSocket = initsSocket();
 
@@ -237,6 +225,6 @@ Server::~Server()
         serverThread.join();
     }
 
-    closeSocket(serverSocket);
-    WSACleanupIfNeeded();
+    closesocket(serverSocket);
+    WSACleanup();
 }

@@ -1,14 +1,7 @@
 #pragma once 
 
-#ifdef _WIN32
 #include <winsock2.h>
 #include <windows.h>
-#else
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <signal.h>
-#endif
-
 #include <iostream>
 
 #ifndef INVALID_SOCKET
@@ -25,11 +18,7 @@
 class SocketUtil
 {
 public:
-    void WSACleanupIfNeeded();
-
-    void closeSocket(int socket);
-
-    void WSAStartupIfNeeded();
+    void WSAStartUp();
 
     int initsSocket();
 

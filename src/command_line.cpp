@@ -1,6 +1,5 @@
 #include "../headers/command_line.h"
 
-#ifdef _WIN32
 CommandLineHandler::CommandLineHandler()
 {
 
@@ -50,51 +49,8 @@ CommandLineHandler::CommandLineHandler()
         }
     }
 };
-#else
-    CommandLineHandler::CommandLineHandler(int argc, char* argv[])
-    {
-    for (int i = 0; i < argc; i++)
-    {
-        if (memcmp(argv[i], "-debug", 6) == 0) // remove here wcslen
-        {
-            debug = true;
-        }
 
-        if (memcmp(argv[i], "-host", 5) == 0)
-        {
-            host = true;
-        }
-
-        if (memcmp(argv[i], "--gamemode=network", 19) == 0)
-        {
-            gameMode = 'n';
-        }
-
-        if (strncmp(argv[i], "--port=", 8) == 0)
-        {
-            std::string portValue = argv[i] + 8;
-
-            if (!portValue.empty())
-            {
-                port = std::stoi(portValue);
-                std::cout << "Port number: " << port << std::endl;
-            }
-            else
-            {
-                std::cerr << "Port number not specified." << std::endl;
-            }
-        }
-
-        if (memcmp(argv[i], "--gamemode=bot", 15) == 0)
-        {
-            gameMode = 'b';
-        }
-    }
-    }
-#endif
 CommandLineHandler::~CommandLineHandler()
 {
-    #ifdef _WIN32
-        LocalFree(szArgList);
-    #endif
+    LocalFree(szArgList);
 };

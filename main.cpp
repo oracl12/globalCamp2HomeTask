@@ -3,9 +3,7 @@
 #define UNICODE_WAS_UNDEFINED
 #endif
 
-#ifdef _WIN32
-	#include <windows.h>
-#endif
+#include <windows.h>
 
 #ifdef UNICODE_WAS_UNDEFINED
 #undef UNICODE
@@ -19,7 +17,6 @@
 #include "headers/player.h"
 #include "headers/debug.h"
 #include "headers/command_line.h"
-#include "headers/other.h"
 #include "headers/network/client.h"
 #include "headers/network/server.h"
 #include "headers/network/socket_utils.h"
@@ -31,23 +28,13 @@ char gameMode;
 bool ready = false;
 bool host = false;
 
-#ifdef _WIN32
-extern HDC device_context;
-#endif
 extern bool playerStep;
 
-#ifdef _WIN32
+// public should be rerendered (in chamnge of private) only in case that placement is finished
+// take one more unnesesary shot in right side
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
-#else
-int main(int argc, char* argv[])
-#endif
 {
-
-	#ifdef _WIN32
-		CommandLineHandler commandLineHandler;
-	#else
-		CommandLineHandler commandLineHandler(argc, argv);
-	#endif
+	CommandLineHandler commandLineHandler;
 
 	Debug* debug;
 	Server* server;
@@ -82,14 +69,13 @@ int main(int argc, char* argv[])
 	} else {
 		std::cerr << "GAMEMODE - UNDEFINED" << std::endl;
 		std::cerr << "EXItiNG" << std::endl;
-		Sleep(1);
+		Sleep(1000);
 		return 0;
 	}
 
 	std::vector<Ship> &ships = ShipHandler::getShips();
 	ShipHandler::fillUpShips();
 
-#ifdef _WIN32
 	Game::setGameUpdate([&](float delta)
 						{
 		wchar_t charBuffer[256]; 
@@ -174,7 +160,7 @@ int main(int argc, char* argv[])
 	Renderer::SetClearColor({200, 120, 45});
 
 	Game::start();
-	#endif
+
 	if (debug != nullptr) 
 		delete debug;
 	

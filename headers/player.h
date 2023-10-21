@@ -6,7 +6,7 @@
 class Player
 {
 public:
-    static inline int (*getPrivateMatrix())[10]
+    static inline int (*getPrivateMatrix())[10] // reokace 10 with matrix size
     {
         static int player_warship_matrix_private[10][10];
         return player_warship_matrix_private;

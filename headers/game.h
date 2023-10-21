@@ -1,24 +1,20 @@
 #pragma once
 
-#ifdef _WIN32
-	#ifndef UNICODE
-		#define UNICODE
-		#define UNICODE_WAS_UNDEFINED
-	#endif
-
-	#include <windows.h>
-	#include <string>
-
-	#ifdef UNICODE_WAS_UNDEFINED
-		#undef UNICODE
-	#endif
-#else
-	#include <string>
+#ifndef UNICODE
+#define UNICODE
+#define UNICODE_WAS_UNDEFINED
 #endif
 
-#define TITLE L"Warship Battle"
+#include <windows.h>
 
+#ifdef UNICODE_WAS_UNDEFINED
+#undef UNICODE
+#endif
+
+#include <string>
 #include <functional>
+
+#define TITLE L"Warship Battle"
 
 #include "../headers/renderer.h"
 
@@ -34,6 +30,7 @@ private:
 	HINSTANCE hInstance;
 	HWND windowHandle = 0;
 	bool running = false;
+	// TODO change to struct
 	char winner; // y - you, e - enemy
 
 	int windowWidth = Renderer::width;
@@ -69,14 +66,15 @@ public:
 
 	static bool isEndOfGame();
 	static bool isShipPlacementFinished();
-	// static void fillPrivateMatrix();
 
 	static const int matrixS = 10;
 	std::wstring windowTitle = TITLE;
+
 private:
 	void startWindow();
 
-	inline static void setWinner(char win){
+	inline static void setWinner(char win)
+	{
 		if (win == 'e' || win == 'y')
 			getInstance().winner = win;
 	}

@@ -1,35 +1,29 @@
 #pragma once
 
-#ifdef _WIN32
-    #ifndef UNICODE
-        #define UNICODE
-        #define UNICODE_WAS_UNDEFINED
-    #endif
-
-    #include <windows.h>
-
-    #ifdef UNICODE_WAS_UNDEFINED
-    #undef UNICODE
-    #endif
-
-    #include <string>
-#else
-    #include <string.h>
+#ifndef UNICODE
+#define UNICODE
+#define UNICODE_WAS_UNDEFINED
 #endif
 
-#include <iostream>
+#include <windows.h>
 
+#ifdef UNICODE_WAS_UNDEFINED
+#undef UNICODE
+#endif
+
+#include <string>
+#include <iostream>
 
 class CommandLineHandler
 {
 public:
     CommandLineHandler();
 
-    CommandLineHandler(int argc, char* argv[]);
+    CommandLineHandler(int argc, char *argv[]);
 
-	CommandLineHandler(const CommandLineHandler &) = delete;
+    CommandLineHandler(const CommandLineHandler &) = delete;
 
-	CommandLineHandler &operator=(const CommandLineHandler &) = delete;
+    CommandLineHandler &operator=(const CommandLineHandler &) = delete;
 
     const inline char getGameMode()
     {
@@ -67,9 +61,7 @@ private:
     char gameMode;
     int port;
     bool debug = false;
-    #ifdef _WIN32
-        LPWSTR *szArgList;
-    #endif
+    LPWSTR *szArgList;
     int argCount;
     bool host;
     int periodL = 1;

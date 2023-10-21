@@ -7,9 +7,9 @@
 
 struct Ship
 {
-    std::string id;
+    std::string id; // to remove
     std::vector<Rect> rects; // array of rectangles for this ship
-    char relative_position = 'h'; // h - horizontal, v - vertical
+    char relative_position = 'h'; // replace with enum // h - horizontal, v - vertical
     bool avaible = true;
 };
 

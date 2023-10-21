@@ -103,9 +103,7 @@ LRESULT CALLBACK WindowCallback(
 		}
 		
 		if (!Game::isShipPlacementFinished()){
-			#ifdef _WIN32
 			MessageBoxA(NULL, "Ship placement is not finished", "Placement error", MB_OK | MB_ICONINFORMATION);
-			#endif
 			std::cout << "Game: not finished placement" << std::endl;
 			break;
 		}
@@ -118,9 +116,7 @@ LRESULT CALLBACK WindowCallback(
 		}
 
 		if (Game::isEndOfGame()){
-			#ifdef _WIN32
 			MessageBoxA(NULL, Game::getWinner() == 'y' ? "You are winner" : "Enemy wins", "Game ends", MB_OK | MB_ICONINFORMATION);
-			#endif
 			std::cout << "Game: SHUTTING down" << std::endl;
 			exit(1);
 		}
@@ -291,19 +287,6 @@ bool Game::isShipPlacementFinished(){
 
 	return true;
 }
-
-// void Game::fillPrivateMatrix()
-// {
-// 	for (int i = 0; i < Game::matrixS; ++i)
-// 	{
-// 		for (int j = 0; j < Game::matrixS; ++j)
-// 		{
-// 			Player::getPrivateMatrix()[i][j] = -1;
-// 			if (gameMode == 'b')
-// 				Bot::getPublicMatrix()[i][j] = -1;
-// 		}
-// 	}
-// }
 
 void Game::startWindow()
 {

@@ -4,14 +4,9 @@
 #include "../../headers/network/client.h"
 #include "../../headers/player.h"
 #include "../../headers/enemy.h"
-#include "../../headers/other.h"
 
-#ifdef _WIN32
 #include <winsock2.h>
 #include <windows.h>
-#else
-#include <arpa/inet.h>
-#endif
 
 extern void printMatrix(int matrix[][10]);
 
@@ -59,7 +54,7 @@ void Client::readyCheck()
             buffer[bytesRead] = '\0';
             if (bytesRead <= 0)
             {
-                Sleep(1);
+                Sleep(1000);
                 std::cerr << "CLIENT: SERVER dead" << std::endl;
                 break;
             }
@@ -156,7 +151,7 @@ Client::Client(int port)
 {
     std::cout << "STARTING CLIENT" << std::endl;
 
-    WSAStartupIfNeeded();
+    WSAStartUp();
 
     clientSocket = initsSocket();
 
@@ -174,6 +169,6 @@ Client::~Client()
         clientThread.join();
     }
 
-    closeSocket(clientSocket);
-    WSACleanupIfNeeded();
+    closesocket(clientSocket);
+    WSACleanup();
 }
