@@ -15,10 +15,8 @@ bool currentlySearching = true;
 bool currentlySearchingVectorOfShip = false;
 bool currentlySearchingByVectorTiles = false;
 
-bool vector_direction = false;
-
-int x, y;
-char vector;
+int x, y; // current point
+char vector; // vector of shooting
 std::random_device dev;
 std::mt19937 rng(dev());
 std::uniform_int_distribution<std::mt19937::result_type> dist10(0, 9);
@@ -49,7 +47,7 @@ bool Bot::makeShot(int x, int y)
 
 bool Bot::shootOneOfFourClosesTile()
 {
-    if (y > 0 && Player::getPublicMatrix()[y - 1][x] == 0)
+    if (y > 1 && Player::getPublicMatrix()[y - 1][x] == 0)
     {
         std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT top" << std::endl;
         if (makeShot(x, y - 1))
@@ -59,7 +57,7 @@ bool Bot::shootOneOfFourClosesTile()
         }
         return false;
     }
-    else if (x < 10 && Player::getPublicMatrix()[y][x + 1] == 0)
+    else if (x < 9 && Player::getPublicMatrix()[y][x + 1] == 0)
     {
         std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT right" << std::endl;
         if (makeShot(x + 1, y))
@@ -69,7 +67,7 @@ bool Bot::shootOneOfFourClosesTile()
         }
         return false;
     }
-    else if (y < 10 && Player::getPublicMatrix()[y + 1][x] == 0)
+    else if (y < 9 && Player::getPublicMatrix()[y + 1][x] == 0)
     {
         std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT bottom" << std::endl;
         if (Bot::makeShot(x, y + 1))
@@ -79,7 +77,7 @@ bool Bot::shootOneOfFourClosesTile()
         }
         return false;
     }
-    else if (x > 0 && Player::getPublicMatrix()[y][x - 1] == 0)
+    else if (x > 1 && Player::getPublicMatrix()[y][x - 1] == 0)
     {
         std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT left" << std::endl;
         if (Bot::makeShot(x - 1, y))
@@ -94,17 +92,28 @@ bool Bot::shootOneOfFourClosesTile()
     std::cout << "BOT: SEARCHING VECTOR: END CAUSE ONE TILE SHIP" << std::endl;
     currentlySearching = true;
     currentlySearchingVectorOfShip = false;
-    entry_point();
+    // entry_point();
     return false;
 }
 
 void movingByYAxis()
 {
+    bool vector_direction = false;
     int v_y = y;
     while (!vector_direction)
     {
         v_y--;
         std::cout << "BOT: MOVING BY Y AXIS: MOVING UP" << std::endl;
+        if (v_y >= 0 && Player::getPublicMatrix()[v_y][x] == 1) {
+            v_y--;
+        } else if (v_y >= 0 && Player::getPublicMatrix()[v_y][x] == 0){
+            // just pass
+        } else {
+            vector_direction = true;
+            playerStep = true;
+            break;
+        }
+
         if (v_y >= 0)
         {
             if (Player::getPublicMatrix()[v_y][x] == 0) {
@@ -118,12 +127,13 @@ void movingByYAxis()
                 std::cout << "BOT: MOVING BY Y AXIS: MOVING UP: SUCCESSFULL SHOT" << std::endl;
                 playerStep = false;
             } else {
+                vector_direction = true;
                 std::cout << "BOT: MOVING BY Y AXIS: MOVING UP: SHOT HERE HAS BEEN ALREADY DONE" << std::endl;
             }
         }
         else
         {
-            playerStep = true;
+            playerStep = false;
             vector_direction = true;
             return;
         }
@@ -135,6 +145,17 @@ void movingByYAxis()
         std::cout << "BOT: MOVING BY Y AXIS: MOVING BOTTOM" << std::endl;
 
         v_y++;
+        if (v_y < 9 && Player::getPublicMatrix()[v_y][x] == 1) {
+            v_y++;
+        } else if (v_y < 9 && Player::getPublicMatrix()[v_y][x] == 0){
+            // nothing
+        } else {
+            playerStep = true;
+            currentlySearching = true;
+            currentlySearchingVectorOfShip = false;
+            currentlySearchingByVectorTiles = false;
+            break;
+        }
 
         if (v_y < 10)
         {
@@ -153,7 +174,10 @@ void movingByYAxis()
                 playerStep = false;
                 std::cout << "BOT: MOVING BY Y AXIS: MOVING UP: SHOT SUCCESSFULL" << std::endl;
             } else {
-                std::cout << "BOT: MOVING BY Y AXIS: MOVING UP: EDGE" << std::endl;
+                currentlySearching = true;
+                currentlySearchingByVectorTiles = false;
+                std::cout << "BOT: MOVING BY Y AXIS: MOVING bottom: SHOOT HERE HAS BEEN aLREADY DONE" << std::endl;
+                return;
             }
         }
         else
@@ -161,7 +185,6 @@ void movingByYAxis()
             playerStep = true;
             currentlySearching = true;
             currentlySearchingByVectorTiles = false;
-            vector_direction = false;
             return;
         }
     }
@@ -169,12 +192,22 @@ void movingByYAxis()
 
 void movingByXAxis()
 {
-    // moving left
+    bool vector_direction = false;
     int v_x = x;
-    while (!vector_direction)
+    while (!vector_direction && currentlySearchingByVectorTiles)
     {
         std::cout << "BOT: MOVING BY AXIS: MOVING left" << std::endl;
         v_x--;
+        if (v_x >= 0 && Player::getPublicMatrix()[y][v_x] == 1) {
+            v_x--;
+        } else if (v_x >= 0 && Player::getPublicMatrix()[y][v_x] == 0){
+            // just pass
+        } else {
+            vector_direction = true;
+            playerStep = true;
+            break;
+        }
+
         if (v_x >= 0)
         {
             if (Player::getPublicMatrix()[y][v_x] == 0)
@@ -191,6 +224,7 @@ void movingByXAxis()
                 std::cout << "BOT: MOVING BY AXIS: MOVING left: SHOT SUCCESSFULL" << std::endl;
             } else {
                 std::cout << "BOT: MOVING BY AXIS: MOVING left: SHOOT HERE HAS BEEN aLREADY DONE" << std::endl;
+                vector_direction = true;
             }
         }
         else
@@ -198,7 +232,6 @@ void movingByXAxis()
             std::cout << "BOT: MOVING BY AXIS: MOVING left: EDGE" << std::endl;
             playerStep = false;
             vector_direction = true;
-            break;
         }
     }
 
@@ -208,6 +241,18 @@ void movingByXAxis()
         std::cout << "BOT: MOVING BY AXIS: MOVING right" << std::endl;
 
         v_x++;
+        if (v_x < 10 && Player::getPublicMatrix()[y][v_x] == 1) {
+            v_x++;
+        } else if (v_x < 10 && Player::getPublicMatrix()[y][v_x] == 0){
+            // nothing
+        } else {
+            playerStep = true;
+            currentlySearching = true;
+            currentlySearchingVectorOfShip = false;
+            currentlySearchingByVectorTiles = false;
+            break;
+        }
+
         if (v_x < 10)
         {
             if (Player::getPublicMatrix()[y][v_x] == 0 ) {
@@ -221,10 +266,14 @@ void movingByXAxis()
                     currentlySearchingByVectorTiles = false;
                     return;
                 }
+
                 playerStep = false;
                 std::cout << "BOT: MOVING BY AXIS: MOVING right: SHOT SUCCESSFULL" << std::endl;
             } else {
+                currentlySearching = true;
+                currentlySearchingByVectorTiles = false;
                 std::cout << "BOT: MOVING BY AXIS: MOVING right: SHOOT HERE HAS BEEN aLREADY DONE" << std::endl;
+                return;
             }
         }
         else
@@ -233,7 +282,6 @@ void movingByXAxis()
             playerStep = true;
             currentlySearching = true;
             currentlySearchingByVectorTiles = false;
-            vector_direction = false;
             return;
         }
     }

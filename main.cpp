@@ -22,7 +22,10 @@
 #include "headers/network/server.h"
 #include "headers/network/socket_utils.h"
 
-// this is possible shared variables
+// maybe: this is possible shared variables
+// reformat some code from bot
+// check one more time if network works as expected
+
 bool ready = false;
 
 extern bool playerStep;
