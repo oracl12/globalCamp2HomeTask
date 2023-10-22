@@ -96,7 +96,7 @@ bool ShipHandler::canPlaceShip(int startX, int startY, char orientation, int shi
         }
 
         for (int x = startX; x < startX + shipLength; x++) { // Check for collisions with other ships horizontally
-            if (Player::getPrivateMatrix()[startY][x] == 2) {
+            if (Player::getPrivateMatrix()[startY][x] == Conf::TileStatus::SHIP) {
 				std::cout << " Ship collides with another ship " << std::endl;
                 return false; // Ship collides with another ship
             }
@@ -105,7 +105,7 @@ bool ShipHandler::canPlaceShip(int startX, int startY, char orientation, int shi
 		// Check for minimal distance between ships horizontally
         for (int x = startX - 1; x < startX + shipLength + 1; ++x) {
             for (int y = startY - 1; y < startY + 1 + 1; ++y) {
-                if (x >= 0 && x < 10 && y >= 0 && y < 10 && Player::getPrivateMatrix()[y][x] != 0) {
+                if (x >= 0 && x < 10 && y >= 0 && y < 10 && Player::getPrivateMatrix()[y][x] != Conf::TileStatus::HIDDEN) {
                     return false; // Too close to another ship
                 }
             }
@@ -115,7 +115,7 @@ bool ShipHandler::canPlaceShip(int startX, int startY, char orientation, int shi
             return false; // Ship goes beyond the board's bottom edge
         }
         for (int y = startY; y < startY + shipLength; y++) {  // Check for collisions with other ships vertically
-            if (Player::getPrivateMatrix()[y][startX] == 2) {
+            if (Player::getPrivateMatrix()[y][startX] == Conf::TileStatus::SHIP) {
                 return false; // Ship collides with another ship
             }
         }
@@ -123,7 +123,7 @@ bool ShipHandler::canPlaceShip(int startX, int startY, char orientation, int shi
 		// Check for minimal distance between ships vertically
         for (int y = startY - 1; y < startY + shipLength + 1; ++y) {
             for (int x = startX - 1; x < startX + 1 + 1; ++x) {
-                if (x >= 0 && x < 10 && y >= 0 && y < 10 && Player::getPrivateMatrix()[y][x] != 0) {
+                if (x >= 0 && x < 10 && y >= 0 && y < 10 && Player::getPrivateMatrix()[y][x] != Conf::TileStatus::HIDDEN) {
                     return false; // Too close to another ship
                 }
             }
@@ -136,7 +136,7 @@ bool ShipHandler::canPlaceShip(int startX, int startY, char orientation, int shi
 
 bool ShipHandler::isDestroyed(Ship* ship) {// last two params is x and y where matrix starts
     for (const Rect& rect : ship->rects) {
-        if (Player::getPrivateMatrix()[rect.placeOnMatrix.y][rect.placeOnMatrix.x] != 1) {
+        if (Player::getPrivateMatrix()[rect.placeOnMatrix.y][rect.placeOnMatrix.x] != Conf::TileStatus::DESTROYED) {
             return false;
         }
     }

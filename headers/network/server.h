@@ -1,9 +1,19 @@
 #pragma once
 
-#include "socket_utils.h"
-#include "../game.h"
+#include <iostream>
+#include <vector>
 #include <mutex>
 #include <thread>
+#include <algorithm>
+#include <cstring>
+#include <winsock2.h>
+#include <windows.h>
+
+#include "socket_utils.h"
+#include "../game.h"
+#include "../conf.h"
+#include "../../headers/player.h"
+#include "../../headers/enemy.h"
 
 extern bool ready;
 extern bool forceExhangeMatrix;

@@ -1,14 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <mutex>
-#include <algorithm>
-#include <cstring>
-#include <winsock2.h>
-#include <windows.h>
-
 #include "../../headers/network/server.h"
-#include "../../headers/player.h"
-#include "../../headers/enemy.h"
 
 void printMatrix(int matrix[][10])
 {
@@ -117,10 +107,10 @@ void Server::readyCheck(int clientSocket)
 
 void Server::sendReceivePrivateMatrix(int clientSocket)
 {
-    int matrix[10][10];
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-            matrix[i][j] = Player::getPrivateMatrix()[i][j];
+    int matrix[Conf::matrixS][Conf::matrixS];
+    for (int i = 0; i < Conf::matrixS; i++) {
+        for (int j = 0; j < Conf::matrixS; j++) {
+            matrix[i][j] = (int) Player::getPrivateMatrix()[i][j];
         }
     }
 
@@ -137,10 +127,10 @@ void Server::sendReceivePrivateMatrix(int clientSocket)
     } else {
         std::cout << "Matrix received successfully" << std::endl;
 
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < Conf::matrixS; i++) {
+            for (int j = 0; j < Conf::matrixS; j++) {
                 std::cout << matrix[i][j] << ' ';
-                Enemy::getPrivateMatrix()[i][j] = matrix[i][j];
+                Enemy::getPrivateMatrix()[i][j] = (Conf::TileStatus) matrix[i][j];
             }
             std::cout << std::endl;
         }
@@ -148,7 +138,7 @@ void Server::sendReceivePrivateMatrix(int clientSocket)
         std::cout << "ENEMYs:" << std::endl;
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                std::cout << Enemy::getPrivateMatrix()[i][j] << ' ';
+                std::cout << (int) Enemy::getPrivateMatrix()[i][j] << ' ';
             }
             std::cout << std::endl;
         }
@@ -158,9 +148,9 @@ void Server::sendReceivePrivateMatrix(int clientSocket)
 void Server::sendPublicMatrix(int clientSocket)
 {
     int matrix[10][10];
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-            matrix[i][j] = Enemy::getPublicMatrix()[i][j];
+    for (int i = 0; i < Conf::matrixS; i++) {
+        for (int j = 0; j < Conf::matrixS; j++) {
+            matrix[i][j] = (int) Enemy::getPublicMatrix()[i][j];
         }
     }
     std::cout << "Public Matrix is about to sent" << std::endl;
@@ -175,7 +165,7 @@ void Server::sendPublicMatrix(int clientSocket)
 
 void Server::receivePublicMatrix(int clientSocket)
 {
-    int matrix[10][10];
+    int matrix[Conf::matrixS][Conf::matrixS];
 
     std::cout << "Public Matrix waiting to receive" << std::endl;
     int bytesReceived = recv(clientSocket, (char*)matrix, sizeof(matrix), 0);
@@ -184,18 +174,18 @@ void Server::receivePublicMatrix(int clientSocket)
     } else {
         std::cout << "Public Matrix received successfully" << std::endl;
 
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < Conf::matrixS; i++) {
+            for (int j = 0; j < Conf::matrixS; j++) {
                 std::cout << matrix[i][j] << ' ';
-                Player::getPublicMatrix()[i][j] = matrix[i][j];
+                Player::getPublicMatrix()[i][j] = (Conf::TileStatus) matrix[i][j];
             }
             std::cout << std::endl;
         }
 
         std::cout << "ENEMYs public:" << std::endl;
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                std::cout << Player::getPublicMatrix()[i][j] << ' ';
+        for (int i = 0; i < Conf::matrixS; i++) {
+            for (int j = 0; j < Conf::matrixS; j++) {
+                std::cout << (int) Player::getPublicMatrix()[i][j] << ' ';
             }
             std::cout << std::endl;
         }

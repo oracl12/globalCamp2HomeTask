@@ -2,9 +2,17 @@
 
 #include <thread>
 #include <mutex>
+#include <winsock2.h>
+#include <windows.h>
+#include <iostream>
+#include <cstring>
+#include <thread>
 
-#include "socket_utils.h"
+#include "../../headers/player.h"
+#include "../../headers/enemy.h"
 #include "../game.h"
+#include "../conf.h"
+#include "socket_utils.h"
 
 extern bool ready;
 extern bool playerStep;

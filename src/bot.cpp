@@ -26,15 +26,15 @@ bool Bot::makeShot(int x, int y)
 {
     if (x >= 0 && x < 10 && y >= 0 && y < 10)
     {
-        if (Player::getPrivateMatrix()[y][x] == 2)
+        if (Player::getPrivateMatrix()[y][x] == Conf::TileStatus::SHIP)
         {
-            Player::getPublicMatrix()[y][x] = 1;
-            Player::getPrivateMatrix()[y][x] = 1;
+            Player::getPublicMatrix()[y][x] = Conf::TileStatus::DESTROYED;
+            Player::getPrivateMatrix()[y][x] = Conf::TileStatus::DESTROYED;
             return true;
         }
         else
         {
-            Player::getPublicMatrix()[y][x] = -1;
+            Player::getPublicMatrix()[y][x] = Conf::TileStatus::CLEARED;
             return false;
         }
     }
@@ -47,7 +47,7 @@ bool Bot::makeShot(int x, int y)
 
 bool Bot::shootOneOfFourClosesTile()
 {
-    if (y > 1 && Player::getPublicMatrix()[y - 1][x] == 0)
+    if (y > 1 && Player::getPublicMatrix()[y - 1][x] == Conf::TileStatus::HIDDEN)
     {
         std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT top" << std::endl;
         if (makeShot(x, y - 1))
@@ -57,7 +57,7 @@ bool Bot::shootOneOfFourClosesTile()
         }
         return false;
     }
-    else if (x < 9 && Player::getPublicMatrix()[y][x + 1] == 0)
+    else if (x < 9 && Player::getPublicMatrix()[y][x + 1] == Conf::TileStatus::HIDDEN)
     {
         std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT right" << std::endl;
         if (makeShot(x + 1, y))
@@ -67,7 +67,7 @@ bool Bot::shootOneOfFourClosesTile()
         }
         return false;
     }
-    else if (y < 9 && Player::getPublicMatrix()[y + 1][x] == 0)
+    else if (y < 9 && Player::getPublicMatrix()[y + 1][x] == Conf::TileStatus::HIDDEN)
     {
         std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT bottom" << std::endl;
         if (Bot::makeShot(x, y + 1))
@@ -77,7 +77,7 @@ bool Bot::shootOneOfFourClosesTile()
         }
         return false;
     }
-    else if (x > 1 && Player::getPublicMatrix()[y][x - 1] == 0)
+    else if (x > 1 && Player::getPublicMatrix()[y][x - 1] == Conf::TileStatus::HIDDEN)
     {
         std::cout << "BOT: SEARCHING VECTOR: SHOOTING AT left" << std::endl;
         if (Bot::makeShot(x - 1, y))
@@ -104,9 +104,9 @@ void movingByYAxis()
     {
         v_y--;
         std::cout << "BOT: MOVING BY Y AXIS: MOVING UP" << std::endl;
-        if (v_y >= 0 && Player::getPublicMatrix()[v_y][x] == 1) {
+        if (v_y >= 0 && Player::getPublicMatrix()[v_y][x] == Conf::TileStatus::DESTROYED) {
             v_y--;
-        } else if (v_y >= 0 && Player::getPublicMatrix()[v_y][x] == 0){
+        } else if (v_y >= 0 && Player::getPublicMatrix()[v_y][x] == Conf::TileStatus::HIDDEN){
             // just pass
         } else {
             vector_direction = true;
@@ -116,7 +116,7 @@ void movingByYAxis()
 
         if (v_y >= 0)
         {
-            if (Player::getPublicMatrix()[v_y][x] == 0) {
+            if (Player::getPublicMatrix()[v_y][x] == Conf::TileStatus::HIDDEN) {
                 if (!Bot::makeShot(x, v_y))
                 {
                     std::cout << "BOT: MOVING BY Y AXIS: MOVING UP: MISSHOT" << std::endl;
@@ -145,9 +145,9 @@ void movingByYAxis()
         std::cout << "BOT: MOVING BY Y AXIS: MOVING BOTTOM" << std::endl;
 
         v_y++;
-        if (v_y < 9 && Player::getPublicMatrix()[v_y][x] == 1) {
+        if (v_y < 9 && Player::getPublicMatrix()[v_y][x] == Conf::TileStatus::DESTROYED) {
             v_y++;
-        } else if (v_y < 9 && Player::getPublicMatrix()[v_y][x] == 0){
+        } else if (v_y < 9 && Player::getPublicMatrix()[v_y][x] == Conf::TileStatus::HIDDEN){
             // nothing
         } else {
             playerStep = true;
@@ -159,7 +159,7 @@ void movingByYAxis()
 
         if (v_y < 10)
         {
-            if (Player::getPublicMatrix()[v_y][x] == 0) {
+            if (Player::getPublicMatrix()[v_y][x] == Conf::TileStatus::HIDDEN) {
                 if (!Bot::makeShot(x, v_y))
                 {
                     std::cout << "BOT: MOVING BY Y AXIS: MOVING BOTTOM: MISSSHOT" << std::endl;
@@ -198,9 +198,9 @@ void movingByXAxis()
     {
         std::cout << "BOT: MOVING BY AXIS: MOVING left" << std::endl;
         v_x--;
-        if (v_x >= 0 && Player::getPublicMatrix()[y][v_x] == 1) {
+        if (v_x >= 0 && Player::getPublicMatrix()[y][v_x] == Conf::TileStatus::DESTROYED) {
             v_x--;
-        } else if (v_x >= 0 && Player::getPublicMatrix()[y][v_x] == 0){
+        } else if (v_x >= 0 && Player::getPublicMatrix()[y][v_x] == Conf::TileStatus::HIDDEN){
             // just pass
         } else {
             vector_direction = true;
@@ -210,7 +210,7 @@ void movingByXAxis()
 
         if (v_x >= 0)
         {
-            if (Player::getPublicMatrix()[y][v_x] == 0)
+            if (Player::getPublicMatrix()[y][v_x] == Conf::TileStatus::HIDDEN)
             {
                 if (!Bot::makeShot(v_x, y))
                 {
@@ -241,9 +241,9 @@ void movingByXAxis()
         std::cout << "BOT: MOVING BY AXIS: MOVING right" << std::endl;
 
         v_x++;
-        if (v_x < 10 && Player::getPublicMatrix()[y][v_x] == 1) {
+        if (v_x < 10 && Player::getPublicMatrix()[y][v_x] == Conf::TileStatus::DESTROYED) {
             v_x++;
-        } else if (v_x < 10 && Player::getPublicMatrix()[y][v_x] == 0){
+        } else if (v_x < 10 && Player::getPublicMatrix()[y][v_x] == Conf::TileStatus::HIDDEN){
             // nothing
         } else {
             playerStep = true;
@@ -255,7 +255,7 @@ void movingByXAxis()
 
         if (v_x < 10)
         {
-            if (Player::getPublicMatrix()[y][v_x] == 0 ) {
+            if (Player::getPublicMatrix()[y][v_x] == Conf::TileStatus::HIDDEN) {
 
                 if (!Bot::makeShot(v_x, y))
                 {
@@ -308,7 +308,7 @@ void Bot::entry_point()
         x = dist10(rng);
         y = dist10(rng);
 
-        while (Player::getPublicMatrix()[y][x] != 0)
+        while (Player::getPublicMatrix()[y][x] != Conf::TileStatus::HIDDEN)
         {
             x = dist10(rng);
             y = dist10(rng);
@@ -373,14 +373,14 @@ void Bot::placeShip(int size, int orientation, int x, int y)
     { // 'h' for horizontal, 'v' for vertical
         for (int i = 0; i < size; i++)
         {
-            Bot::getPrivateMatrix()[y][x + i] = 2;
+            Bot::getPrivateMatrix()[y][x + i] = Conf::TileStatus::SHIP;
         }
     }
     else
     {
         for (int i = 0; i < size; i++)
         {
-            Bot::getPrivateMatrix()[y + i][x] = 2;
+            Bot::getPrivateMatrix()[y + i][x] = Conf::TileStatus::SHIP;
         }
     }
 }
@@ -395,7 +395,7 @@ bool Bot::hasMinimumDistance(int x, int y, int size, int orientation)
             {
                 if (i >= 0 && i < 10 && j >= 0 && j < 10)
                 {
-                    if (Bot::getPrivateMatrix()[i][j] == 2)
+                    if (Bot::getPrivateMatrix()[i][j] == Conf::TileStatus::SHIP)
                     {
                         return false;
                     }
@@ -411,7 +411,7 @@ bool Bot::hasMinimumDistance(int x, int y, int size, int orientation)
             {
                 if (i >= 0 && i < 10 && j >= 0 && j < 10)
                 {
-                    if (Bot::getPrivateMatrix()[i][j] == 2)
+                    if (Bot::getPrivateMatrix()[i][j] == Conf::TileStatus::SHIP)
                     {
                         return false;
                     }

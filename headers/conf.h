@@ -10,6 +10,14 @@ public:
         NETWORK
     };
 
+    enum class TileStatus {
+        CLEARED = -1,
+        HIDDEN = 0,
+        DESTROYED = 1,
+        SHIP = 2 
+    };
+
+
     static int port;
     static GameMode gameMode;
     static bool host;

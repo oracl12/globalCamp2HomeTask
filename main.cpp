@@ -22,12 +22,7 @@
 #include "headers/network/server.h"
 #include "headers/network/socket_utils.h"
 
-// maybe: this is possible shared variables
-// reformat some code from bot
-// check one more time if network works as expected
-
 bool ready = false;
-
 extern bool playerStep;
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
@@ -89,13 +84,13 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 			for (int row = 0; row < Conf::matrixS; row++) {
 				RGBColor color;
 				switch ((ready ? Player::getPublicMatrix() : Player::getPrivateMatrix())[line][row]) {
-					case -1: // sector is cleared
+					case Conf::TileStatus::CLEARED: // sector is cleared
 						color = { 12, 21, 12 };
 						break;
-					case 1: // sector where ship is hitten
+					case Conf::TileStatus::DESTROYED: // sector where ship is hitten
 						color = { 255, 5, 5 };
 						break;
-					case 2: // ship of yours
+					case Conf::TileStatus::SHIP: // ship of yours
 						color = { 255, 192, 203 };
 						break;
 					default: // hidden tile
@@ -119,13 +114,13 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 			for (int row = 0; row < Conf::matrixS; row++) {
 				RGBColor color;
 				switch (Enemy::getPublicMatrix()[line][row]) {
-					case -1: // sector is cleared
+					case Conf::TileStatus::CLEARED: // sector is cleared
 						color = { 12, 21, 12 };
 						break;
-					case 1: // sector where ship is hitten
+					case Conf::TileStatus::DESTROYED: // sector where ship is hitten
 						color = { 255, 5, 5 };
 						break;
-					case 2: // ship of yours
+					case Conf::TileStatus::SHIP: // ship of yours
 						color = { 255, 192, 203 };
 						break;
 					default: // hidden tile

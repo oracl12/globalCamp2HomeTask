@@ -9,18 +9,18 @@ bool Player::makeShot(int x, int y)
 {
     if (x >= 0 && x < 10 && y >= 0 && y < 10)
     {
-        if (Enemy::getPrivateMatrix()[y][x] == 2)
+        if (Enemy::getPrivateMatrix()[y][x] == Conf::TileStatus::SHIP)
         {
             // if successful mark it as 1 in the public
-            Enemy::getPublicMatrix()[y][x] = 1;
-            Enemy::getPrivateMatrix()[y][x] = 1;
+            Enemy::getPublicMatrix()[y][x] = Conf::TileStatus::DESTROYED;
+            Enemy::getPrivateMatrix()[y][x] = Conf::TileStatus::DESTROYED;
             std::cout << "Player: Shot successful!" << std::endl;
             return true;
         }
         else
         {
-            if (Enemy::getPrivateMatrix()[y][x] != 1) {
-                Enemy::getPublicMatrix()[y][x] = -1;
+            if (Enemy::getPrivateMatrix()[y][x] != Conf::TileStatus::DESTROYED) {
+                Enemy::getPublicMatrix()[y][x] = Conf::TileStatus::CLEARED;
             }
             std::cout << "Player: Shot missed!" << std::endl;
             return false;
@@ -58,13 +58,13 @@ bool Player::placeShip(int startX, int startY, Ship& ship) {
     if (ShipHandler::canPlaceShip(startX, startY, ship.relative_position, shipLength)) {
         if (ship.relative_position == 'h') {
             for (int x = startX; x < startX + shipLength; ++x) {
-                getPrivateMatrix()[startY][x] = 2;
+                getPrivateMatrix()[startY][x] = Conf::TileStatus::SHIP;
                 ship.rects.at(counter).placeOnMatrix = { x, startY };
                 counter++;
             }
         } else if (ship.relative_position == 'v') {
             for (int y = startY; y < startY + shipLength; ++y) {
-                getPrivateMatrix()[y][startX] = 2;
+                getPrivateMatrix()[y][startX] = Conf::TileStatus::SHIP;
                 ship.rects.at(counter).placeOnMatrix = { startX, y };
                 counter++;
             }
@@ -75,18 +75,18 @@ bool Player::placeShip(int startX, int startY, Ship& ship) {
 }
 
 bool Player::removeShip(int startX, int startY, Ship& ship) {
-    if (getPrivateMatrix()[startY][startX] != 2){
+    if (getPrivateMatrix()[startY][startX] != Conf::TileStatus::SHIP){
         return false;
     }
     
 	int shipLength = ship.rects.size();
     if (ship.relative_position == 'h') {
         for (int x = ship.rects[0].placeOnMatrix.x; x < ship.rects[0].placeOnMatrix.x + shipLength; ++x) {
-            getPrivateMatrix()[startY][x] = 0; // Clear the cell
+            getPrivateMatrix()[startY][x] = Conf::TileStatus::HIDDEN; // Clear the cell
         }
     } else if (ship.relative_position == 'v') {
         for (int y = ship.rects[0].placeOnMatrix.y; y < ship.rects[0].placeOnMatrix.y + shipLength; ++y) {
-            getPrivateMatrix()[y][startX] = 0; // Clear the cell
+            getPrivateMatrix()[y][startX] = Conf::TileStatus::HIDDEN; // Clear the cell
         }
     }
     ship.avaible = true;

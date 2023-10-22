@@ -5,15 +5,15 @@
 
 class Enemy {
 public:
-    static inline int (*getPrivateMatrix())[Conf::matrixS]
+    static inline Conf::TileStatus (*getPrivateMatrix())[Conf::matrixS]
     {
-        static int enemy_warship_matrix_private[Conf::matrixS][Conf::matrixS];
+        static Conf::TileStatus enemy_warship_matrix_private[Conf::matrixS][Conf::matrixS];
         return enemy_warship_matrix_private;
     }
 
-    static inline int (*getPublicMatrix())[Conf::matrixS]
+    static inline Conf::TileStatus (*getPublicMatrix())[Conf::matrixS]
     {
-        static int enemy_warship_matrix_public[Conf::matrixS][Conf::matrixS];
+        static Conf::TileStatus enemy_warship_matrix_public[Conf::matrixS][Conf::matrixS];
         return enemy_warship_matrix_public;
     };
 };

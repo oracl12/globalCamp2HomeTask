@@ -256,7 +256,7 @@ Game::Winner Game::isEndOfGame(){
 	// then check enems matrix
 	for (int row = 0; row < Conf::matrixS; ++row) {
         for (int col = 0; col < Conf::matrixS; ++col) {
-            if (Enemy::getPrivateMatrix()[row][col] == 2) {
+            if (Enemy::getPrivateMatrix()[row][col] == Conf::TileStatus::SHIP) {
                 return Game::Winner::NONE;
             }
         }

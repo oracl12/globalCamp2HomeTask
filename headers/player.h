@@ -6,15 +6,15 @@
 class Player
 {
 public:
-    static inline int (*getPrivateMatrix())[Conf::matrixS] // reokace 10 with matrix size
+    static inline Conf::TileStatus (*getPrivateMatrix())[Conf::matrixS]
     {
-        static int player_warship_matrix_private[Conf::matrixS][Conf::matrixS];
+        static Conf::TileStatus player_warship_matrix_private[Conf::matrixS][Conf::matrixS];
         return player_warship_matrix_private;
     };
 
-    static inline int (*getPublicMatrix())[Conf::matrixS]
+    static inline Conf::TileStatus (*getPublicMatrix())[Conf::matrixS]
     {
-        static int player_warship_matrix_public[Conf::matrixS][Conf::matrixS];
+        static Conf::TileStatus player_warship_matrix_public[Conf::matrixS][Conf::matrixS];
         return player_warship_matrix_public;
     };
 
